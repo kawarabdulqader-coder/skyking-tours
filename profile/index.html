@@ -155,6 +155,9 @@
 .links.mini a.map>span:not(.ico){white-space:normal!important}
 .links.mini a.eml{grid-column:span 2!important}
 .links.mini a.eml .ico{background:#141414;font-size:15px}
+.xl{display:grid;gap:8px;margin-top:10px}
+.xb{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;background:#141414;border:1px solid var(--gold);border-radius:14px;padding:12px 14px;font-weight:800;font-size:14px}
+.xb .arrow{margin-inline-start:auto;color:var(--gold2)}
 </style>
 </head>
 <body>
@@ -217,8 +220,12 @@
     <a class="btn map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Skyking+Tourism+Duhok">
       <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
       <span><span data-t="loc"></span><small data-t="locsub" style="direction:inherit"></small></span><span class="arrow">›</span></a>
-    <a class="btn eml" target="_blank" rel="noopener" href="mailto:Kawar.abdulqader@uoz.edu.krd" title="Kawar.abdulqader@uoz.edu.krd"><span class="ico">✉️</span><span data-t="eml"></span></a>
+    <a class="btn eml" target="_blank" rel="noopener" href="mailto:info.skykingtourism@gmail.com" title="info.skykingtourism@gmail.com"><span class="ico">✉️</span><span data-t="eml"></span></a>
   </nav>
+  <div class="xl">
+    <a class="xb" href="https://claude.ai/artifact/W552VuhLUYzoe6w4UVcYQQ" target="_blank" rel="noopener"><span>🌐</span><span data-t="oth"></span><span class="arrow">›</span></a>
+    <a class="xb" href="https://claude.ai/artifact/R9XJucmPu8SZqqLbJuXw7n" target="_blank" rel="noopener"><span>👤</span><span data-t="mgr"></span><span class="arrow">›</span></a>
+  </div>
   </main>
 
   <footer>© Skyking Tourism &amp; Aviation · <span data-t="city"></span></footer>
@@ -227,17 +234,17 @@
 const WA="9647507396237";
 const T={
  ku:{vph:"بەرێ خۆ بدە وێنەیێن ڤیزا",vvd:"بەرێ خۆ بدە ڤیدیۆیێن ڤیزا",dir:"rtl",name:"سکای کینگ ژبو خزمەتێن کونسولگەری و گەشتیاری",tag:"",chips:["ڤیزا","بلیتێن فرۆکێ","گەشت","پوستێ ب لەز","گروپێن گەشتیاری","هوتێل","بیمەیا تەندروستیێ","هژمارا بانکێ","ژڤانێن قونسلخانێ"],wa1:"واتسئاپ ١",wa2:"واتسئاپ ٢",call:"تەلەفۆن بکە",rh:"بۆ هەر گازندەکێ، هیڤییە نامەیەکێ بۆ مە بهنێرە",rp:"ب چەند چرکەیان ل سەر گوگلی ستێران بدە مە و ڕایا خۆ بنڤێسە. ڕایا تە هاریکاریا خەلکێ دیتر دکەت.",rb:"ل سەر گوگلی ستێران بدە مە",st1:"ڤیزە هاتینە وەرگرتن",st2:"وەلات",st3:"پوست بۆ هەمی جیهانێ",iah:"پێدڤیاتیێن هەر وەلاتەکی بپشکنە",iap:"IATA Travel Centre: پاسپۆرت، ڤیزا و مەرجێن ساخلەمیێ بۆ هەمی وەلاتێن جیهانێ (ژێدەرێ فەرمی یێ هێلێن ئاسمانی)",grp:"گروپێن گەشتیاری (کەنگی گروپا داهاتی یە و بها چەندە؟)",fol:"+ فۆلۆ بکە",folh:"مە فۆلۆ بکە دا ئۆفەر و تورێن نوی ژ دەست تە نەچن",
-  loc:"کلیک بکە دا جهێ مە ل سەر نەخشەی ببینی",locsub:"",eml:"ئیمەیل",visas:"هندەک ژ وان ڤیزێن هاتینە وەرگرتن",soon:"هەمی ڤیزە ب ڕەزامەندیا خودانێن وان هاتینە بەلاڤکرن. بۆ پاراستنا وان، ژمارا پاسپۆرتێ و کۆدێن ئەلەکترۆنی هاتینە ڤەشارتن.",de:"ئەلمانیا",fr:"فەرەنسا",it:"ئیتالیا",gr:"یۆنان",uk:"بەریتانیا",us:"ئەمریکا",usv:"ڤیزا ئەمریکا (B1/B2)",sch:"ڤیزا شەنگن",ukv:"ڤیزا بەریتانیا",nat:"ڤیزا نیشتمانی (D)",ok:"✓ هاتە وەرگرتن",city:"دهۆک",
+  loc:"کلیک بکە دا جهێ مە ل سەر نەخشەی ببینی",locsub:"",eml:"ئیمەیل",oth:"بۆ خزمەتگوزاریێن دی کلیک بکە",mgr:"ڕێڤەبەرێ سکای کینگ",visas:"هندەک ژ وان ڤیزێن هاتینە وەرگرتن",soon:"هەمی ڤیزە ب ڕەزامەندیا خودانێن وان هاتینە بەلاڤکرن. بۆ پاراستنا وان، ژمارا پاسپۆرتێ و کۆدێن ئەلەکترۆنی هاتینە ڤەشارتن.",de:"ئەلمانیا",fr:"فەرەنسا",it:"ئیتالیا",gr:"یۆنان",uk:"بەریتانیا",us:"ئەمریکا",usv:"ڤیزا ئەمریکا (B1/B2)",sch:"ڤیزا شەنگن",ukv:"ڤیزا بەریتانیا",nat:"ڤیزا نیشتمانی (D)",ok:"✓ هاتە وەرگرتن",city:"دهۆک",
   svch:"خزمەتێن ڤیزێ",ask:"پسیار بکە ›",msg:"سلاڤ، دڤێم زانیاریان وەربگرم دەربارەی: ",
   docsh:"بەلگەنامێن پێدڤی",docsnote:"لیستا دووماهیێ ل نڤیسینگەها مە بۆ تە دێ هێتە پشتراستکرن.",
   svd:["ئەلمانیا، فەرەنسا، ئیتالیا، یۆنان و هەمی وەلاتێن شەنگن","ڤیزا گەشت و بازرگانیێ (B1/B2)","ڤیزا سەرەدانێ (Standard Visitor)","ڤیزا گەشت و سەرەدانێ (Visitor Visa)","ئی-ڤیزا و ڤیزا قونسلخانێ","ژڤانێن بالیۆزخانە و قونسلخانان","بیمەیا گەشتێ و ساخلەمیێ یا پەسەندکری بۆ دۆسیا ڤیزێ"],svc:["ڤیزا شەنگن","ڤیزا ئەمریکا","ڤیزا بەریتانیا","ڤیزا کەنەدا","ڤیزا تورکیا","گرتنا ژڤانێن قونسلخانێ","بیمە (ئینشورەنس)"],ct:"پەیوەندیێ ب مە بکە"},
  ar:{vph:"شاهد صور التأشيرات",vvd:"شاهد فيديوهات التأشيرات",dir:"rtl",name:"سكاي كينغ للخدمات القنصلية والسياحة",tag:"",chips:["تأشيرات","تذاكر طيران","رحلات","بريد سريع","مجموعات سياحية","فنادق","تأمين صحي","حساب بنكي","مواعيد القنصليات"],wa1:"واتساب ١",wa2:"واتساب ٢",call:"اتصل بنا",rh:"لأي شكوى، يرجى مراسلتنا عبر البريد الإلكتروني",rp:"قيّمنا على جوجل وشاركنا رأيك في ثوانٍ. رأيك يساعد الآخرين.",rb:"قيّمنا على جوجل",st1:"تأشيرة تمت الموافقة عليها",st2:"دول",st3:"بريد لكل العالم",iah:"تحقق من شروط دخول أي دولة",iap:"IATA Travel Centre: الجواز والتأشيرة والشروط الصحية لجميع دول العالم (المرجع الرسمي لشركات الطيران)",grp:"المجموعات السياحية (متى المجموعة القادمة وكم السعر؟)",fol:"+ تابعنا",folh:"تابعنا لتصلك العروض والرحلات الجديدة أولاً بأول",
-  loc:"اضغط لترى موقعنا على الخريطة",locsub:"",eml:"البريد",visas:"بعض التأشيرات التي حصلنا عليها",soon:"نُشرت جميع التأشيرات بموافقة أصحابها. وحمايةً لهم، تم إخفاء رقم الجواز والرموز الإلكترونية.",de:"ألمانيا",fr:"فرنسا",it:"إيطاليا",gr:"اليونان",uk:"بريطانيا",us:"أمريكا",usv:"تأشيرة أمريكا (B1/B2)",sch:"تأشيرة شنغن",ukv:"تأشيرة بريطانيا",nat:"تأشيرة وطنية (D)",ok:"✓ تمت الموافقة",city:"دهوك",
+  loc:"اضغط لترى موقعنا على الخريطة",locsub:"",eml:"البريد",oth:"اضغط للخدمات الأخرى",mgr:"مدير سكاي كينغ",visas:"بعض التأشيرات التي حصلنا عليها",soon:"نُشرت جميع التأشيرات بموافقة أصحابها. وحمايةً لهم، تم إخفاء رقم الجواز والرموز الإلكترونية.",de:"ألمانيا",fr:"فرنسا",it:"إيطاليا",gr:"اليونان",uk:"بريطانيا",us:"أمريكا",usv:"تأشيرة أمريكا (B1/B2)",sch:"تأشيرة شنغن",ukv:"تأشيرة بريطانيا",nat:"تأشيرة وطنية (D)",ok:"✓ تمت الموافقة",city:"دهوك",
   svch:"خدمات التأشيرات",ask:"استفسر ›",msg:"مرحباً، أريد معلومات عن: ",
   docsh:"المستندات المطلوبة",docsnote:"يتم تأكيد القائمة النهائية في مكتبنا.",
   svd:["ألمانيا، فرنسا، إيطاليا، اليونان وجميع دول شنغن","تأشيرة سياحة وأعمال (B1/B2)","تأشيرة زيارة (Standard Visitor)","تأشيرة سياحة وزيارة (Visitor Visa)","تأشيرة إلكترونية وتأشيرة قنصلية","مواعيد السفارات والقنصليات","تأمين سفر وصحي معتمد لملف التأشيرة"],svc:["تأشيرة شنغن","تأشيرة أمريكا","تأشيرة بريطانيا","تأشيرة كندا","تأشيرة تركيا","حجز مواعيد القنصليات","تأمين (إنشورنس)"],ct:"تواصل معنا"},
  en:{vph:"View visa photos",vvd:"View visa videos",dir:"ltr",name:"Skyking for Consulate Services & Tourism",tag:"",chips:["Visas","Flights","Tours","Express Mail","Tour Groups","Hotels","Health Insurance","Bank Account","Consulate Appointments"],wa1:"WhatsApp 1",wa2:"WhatsApp 2",call:"Call us",rh:"For any complaint, please email us",rp:"Rate us on Google and share your experience. It only takes a few seconds and helps others.",rb:"Rate us on Google",st1:"approved visas",st2:"countries",st3:"worldwide mail",iah:"Check entry rules for any country",iap:"IATA Travel Centre: passport, visa and health requirements for every country (the official airline reference)",grp:"tour groups (when is the next group and what is the price?)",fol:"+ Follow",folh:"Follow us so you never miss new offers and tours",
-  loc:"Tap to see our location on the map",locsub:"",eml:"Email",visas:"Some of the Visas We Obtained",soon:"All visas are shared with their holders' consent. Passport numbers and machine-readable codes are hidden for their protection.",de:"Germany",fr:"France",it:"Italy",gr:"Greece",uk:"United Kingdom",us:"USA",usv:"USA Visa (B1/B2)",sch:"Schengen Visa",ukv:"UK Visa",nat:"National Visa (D)",ok:"✓ Approved",city:"Duhok",
+  loc:"Tap to see our location on the map",locsub:"",eml:"Email",oth:"Tap for our other services",mgr:"Sky King's manager",visas:"Some of the Visas We Obtained",soon:"All visas are shared with their holders' consent. Passport numbers and machine-readable codes are hidden for their protection.",de:"Germany",fr:"France",it:"Italy",gr:"Greece",uk:"United Kingdom",us:"USA",usv:"USA Visa (B1/B2)",sch:"Schengen Visa",ukv:"UK Visa",nat:"National Visa (D)",ok:"✓ Approved",city:"Duhok",
   svch:"Visa Services",ask:"Ask ›",msg:"Hello, I'd like information about: ",
   docsh:"Required Documents",docsnote:"Our office confirms the final list for your case.",
   svd:["Germany, France, Italy, Greece and all Schengen states","Tourist & business visa (B1/B2)","Standard Visitor visa","Tourist & visitor visa (Visitor Visa)","E-visa and consulate visa","Embassy & consulate appointments","Accepted travel & health insurance for your visa file"],svc:["Schengen Visa","USA Visa","UK Visa","Canada Visa","Turkey Visa","Consulate Appointments","Insurance"],ct:"Contact us"}
