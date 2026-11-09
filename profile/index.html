@@ -158,8 +158,8 @@
 .xl{display:grid;gap:8px;margin-top:10px}
 .xb{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;background:#141414;border:1px solid var(--gold);border-radius:14px;padding:12px 14px;font-weight:800;font-size:14px}
 .xb .arrow{margin-inline-start:auto;color:var(--gold2)}
-.links.mini a.map{grid-column:1/-1!important}
-.links.mini a.eml{grid-column:1/-1!important;flex-direction:row!important;gap:8px!important;padding:8px 10px!important;font-size:12.5px!important;text-align:start}
+
+
 .emt{direction:ltr;color:#1a5fb4;font-weight:700}
 </style>
 </head>
@@ -223,10 +223,10 @@
     <a class="btn map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Skyking+Tourism+Duhok">
       <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
       <span><span data-t="loc"></span><small data-t="locsub" style="direction:inherit"></small></span><span class="arrow">›</span></a>
-    <a class="btn eml" target="_blank" rel="noopener" href="mailto:info.skykingtourism@gmail.com" title="info.skykingtourism@gmail.com"><span class="ico">✉️</span><span class="emt">info.skykingtourism@gmail.com</span></a>
+    <a class="btn eml" href="#" id="emlb" title="info.skykingtourism@gmail.com"><span class="ico">✉️</span><span data-t="eml"></span></a>
   </nav>
   <div class="xl">
-    <a class="xb" href="https://claude.ai/artifact/W552VuhLUYzoe6w4UVcYQQ" target="_blank" rel="noopener"><span>🌐</span><span data-t="oth"></span><span class="arrow">›</span></a>
+    <a class="xb" href="https://kawarabdulqader-coder.github.io/skyking-tours/services/" target="_blank" rel="noopener"><span>🌐</span><span data-t="oth"></span><span class="arrow">›</span></a>
     <a class="xb" href="https://claude.ai/artifact/R9XJucmPu8SZqqLbJuXw7n" target="_blank" rel="noopener"><span>👤</span><span data-t="mgr"></span><span class="arrow">›</span></a>
   </div>
   </main>
@@ -412,6 +412,15 @@ setLang(start);
  document.querySelectorAll(".langs button").forEach(x=>x.addEventListener("click",()=>setTimeout(ui,0)));
  setTimeout(ui,0);ui();
 })();</script>
+<div id="emlp" hidden style="position:fixed;inset:0;background:#0008;z-index:200;display:grid;place-items:center;padding:20px">
+<div style="background:#fff;border-radius:16px;padding:18px;max-width:340px;width:100%;text-align:center;font-family:inherit">
+<div style="font-size:26px">✉️</div>
+<div style="direction:ltr;font-weight:800;font-size:16px;color:#1a5fb4;margin:8px 0 14px;word-break:break-all;user-select:all">info.skykingtourism@gmail.com</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<button id="emlc" type="button" style="font:inherit;font-weight:800;border:1px solid #c79a3a;background:#141414;color:#e9c46a;border-radius:12px;padding:10px">📋 Copy</button>
+<a href="mailto:info.skykingtourism@gmail.com" style="font-weight:800;background:#c79a3a;color:#111;border-radius:12px;padding:10px;text-decoration:none">✉️ Email</a>
+</div></div></div>
+<script>(()=>{const p=document.getElementById("emlp");document.getElementById("emlb").onclick=e=>{e.preventDefault();p.hidden=false};p.onclick=e=>{if(e.target===p)p.hidden=true};document.getElementById("emlc").onclick=async()=>{const b=document.getElementById("emlc");try{await navigator.clipboard.writeText("info.skykingtourism@gmail.com");b.textContent="✓"}catch(x){b.textContent="✓"}}})();</script>
 </body>
 </html>
 
