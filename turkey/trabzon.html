@@ -184,7 +184,7 @@ function panelHTML(){const p=S.p||{s:150,e:0,d:today()};const d=p.d;
  return `<div class="panel"><b>${T('panel')}</b><div style="display:flex;gap:14px;flex-wrap:wrap"><div><label>${T('tS')}</label><input id="ps" type="number" inputmode="numeric" value="${p.s}"></div><div><label>${T('tE')}</label><input id="pe" type="number" inputmode="numeric" value="${p.e}"></div><div><label>${T('date')}</label><input id="pd" type="date" value="${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}"></div></div>
  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="pmk">${T('make')}</button></div><div id="pout"></div></div>`}
 function bind(){
- document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{const v=b.dataset.v;if(v===S.view)return;if(v==='home'){goHome();return}try{history.pushState({v},'')}catch(e){}vStop();S.view=v;render();window.scrollTo(0,0);if(VK[v])vPlay()});
+ document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{const v=b.dataset.v;if(v===S.view)return;if(v==='home'){goHome();return}try{history.pushState({v},'')}catch(e){}vStop();S.view=v;render();window.scrollTo(0,0)});
  const vb=document.getElementById('vbtn');if(vb){vb.onclick=()=>{const a=curAU();(a&&!a.paused&&!a.ended)?vStop():vPlay()};vUI()}
  document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{let st=null;try{st=history.state}catch(e){}vStop();if(st&&st.v){history.back()}else{S.view='home';render();window.scrollTo(0,0)}});
  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{S.g=b.dataset.g;render()});
@@ -199,7 +199,7 @@ function bind(){
   $('#pout').innerHTML=`<div class="link">${esc(url)}</div><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="pcp">${T('copy')}</button><a class="btn g" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${T('share')}</a></div>`;
   $('#pcp').onclick=async()=>{try{await navigator.clipboard.writeText(msg);toast(T('copied'))}catch(e){toast('✗')}}}}
 function goHome(){vStop();S.view='home';try{history.pushState({v:'home'},'')}catch(e){}render();window.scrollTo(0,0)}
-window.addEventListener('popstate',e=>{vStop();S.view=(e.state&&e.state.v)||'home';render();window.scrollTo(0,0);if(VK[S.view])vPlay()});
+window.addEventListener('popstate',e=>{vStop();S.view=(e.state&&e.state.v)||'home';render();window.scrollTo(0,0)});
 let AUS={},PLAYED={};const VK={hotels:'VOICE',program:'VOICE2'};
 function voiceSrc(k){const d=window[k];try{const i=d.indexOf(',');const bin=atob(d.slice(i+1));const u=new Uint8Array(bin.length);for(let n=0;n<bin.length;n++)u[n]=bin.charCodeAt(n);return URL.createObjectURL(new Blob([u],{type:'audio/mpeg'}))}catch(e){return d}}
 function au(){const k=(S.view==='home'?'VOICEH':VK[S.view]);if(!k)return null;if(!AUS[k]){const a=new Audio();a.src=voiceSrc(k);a.setAttribute('playsinline','');a.preload='auto';['play','pause','ended'].forEach(ev=>a.addEventListener(ev,vUI));AUS[k]=a}return AUS[k]}
