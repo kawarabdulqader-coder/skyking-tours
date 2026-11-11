@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حسابێن مە</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;700&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a pocket ledger. Year chips on top, four year figures, then one working tab at a time; every amount is a tap target that opens one edit sheet. */
+:root{
+  --bg:#f2f5f2; --surface:#ffffff; --ink:#14211b; --muted:#5d6b64; --line:#dce3de;
+  --accent:#1e6b4e; --accent-ink:#ffffff; --accent-soft:#e2f0e9;
+  --in:#1b7a4e; --out:#b4412f; --debt:#8f6410;
+  --display:"Noto Kufi Arabic","Vazirmatn",Tahoma,sans-serif;
+  --body:"Vazirmatn","Noto Kufi Arabic",Tahoma,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1512; --surface:#18211c; --ink:#e8efea; --muted:#9aa8a0; --line:#2b3731;
+    --accent:#5fc49a; --accent-ink:#0b1410; --accent-soft:#1d3329;
+    --in:#6fd0a0; --out:#f08f7c; --debt:#e0b458; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1512; --surface:#18211c; --ink:#e8efea; --muted:#9aa8a0; --line:#2b3731;
+  --accent:#5fc49a; --accent-ink:#0b1410; --accent-soft:#1d3329;
+  --in:#6fd0a0; --out:#f08f7c; --debt:#e0b458; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{display:inline-block;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 96px;display:flex;flex-direction:column;gap:16px}
+
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-size:1.5rem;font-weight:700;margin:0;text-wrap:balance}
+.status{font-size:.8rem;color:var(--muted);min-height:1.3em}
+.status.err{color:var(--out)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;min-height:40px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip.ghost{border-style:dashed;color:var(--muted);background:transparent}
+
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:640px){.tiles{grid-template-columns:repeat(5,minmax(0,1fr))}.tiles .tile.main{grid-column:auto}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile .lab{font-size:.8rem;color:var(--muted)}
+.tile .val{font-size:1.25rem;font-weight:700;overflow-wrap:anywhere}
+.tile .sub{font-size:.75rem;color:var(--muted)}
+.tile.in .val{color:var(--in)} .tile.out .val{color:var(--out)} .tile.debt .val{color:var(--debt)}
+.tile.main{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tile.main .lab,.tile.main .sub{color:var(--accent-ink);opacity:.85}
+
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px}
+.tab{border:0;background:transparent;border-radius:10px;padding:8px 4px;min-height:44px;font-size:.9rem;font-weight:500;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.card-h h2{font-family:var(--display);font-size:1.05rem;margin:0}
+.card-h .tot{font-weight:700}
+.card.in .card-h{border-inline-start:5px solid var(--in)} .card.out .card-h{border-inline-start:5px solid var(--out)} .card.debt .card-h{border-inline-start:5px solid var(--debt)}
+.rows{display:flex;flex-direction:column}
+.row{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.rowmain{flex:1;min-width:0;border:0;background:transparent;text-align:start;padding:10px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;min-height:52px}
+.rowmain:hover,.rowmore:hover,.cellb:hover{background:var(--accent-soft)}
+.rname{font-weight:500;overflow-wrap:anywhere}
+.rname small{font-weight:400;color:var(--muted);margin-inline-start:6px}
+.ramt{font-weight:700}
+.ramt.empty{color:var(--muted);font-weight:400}
+.rnote{grid-column:1/-1;font-size:.85rem;color:var(--muted);overflow-wrap:anywhere}
+.rnote::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--debt);margin-inline-end:6px}
+.rowmore{border:0;border-inline-start:1px solid var(--line);background:transparent;width:48px;color:var(--muted);font-size:1.2rem}
+.addbtn{border:0;border-top:1px solid var(--line);background:transparent;color:var(--accent);font-weight:700;padding:12px 14px;width:100%;text-align:start;min-height:48px}
+.addbtn:hover{background:var(--accent-soft)}
+.empty-note{padding:14px;color:var(--muted);font-size:.9rem}
+
+.mtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mtiles .tile{padding:10px} .mtiles .tile .val{font-size:1.05rem}
+
+
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{border-bottom:1px solid var(--line);padding:0;text-align:center;white-space:nowrap}
+th{padding:8px 8px;font-weight:500;color:var(--muted);background:var(--surface)}
+tbody th{position:sticky;inset-inline-start:0;text-align:start;color:var(--ink);min-width:104px;max-width:140px;white-space:normal;padding:8px 10px;border-inline-end:1px solid var(--line);z-index:1}
+thead th:first-child{position:sticky;inset-inline-start:0;z-index:2;border-inline-end:1px solid var(--line)}
+tr.sec th{background:var(--accent-soft);color:var(--accent);font-family:var(--display);font-weight:700;text-align:start}
+tr.sum td,tr.sum th{font-weight:700;background:var(--bg)}
+td.t{padding:8px;font-weight:700}
+.cellb{border:0;background:transparent;width:100%;min-width:64px;min-height:40px;padding:6px 8px;position:relative}
+.cellb.has::after{content:"";position:absolute;top:5px;inset-inline-end:5px;width:7px;height:7px;border-radius:50%;background:var(--debt)}
+
+.lines{display:flex;flex-direction:column}
+.line{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:center;min-height:48px;width:100%;border-inline:0;border-top:0;background:transparent;text-align:start}
+button.line:hover{background:var(--accent-soft)}
+.line:last-child{border-bottom:0}
+.line.total{font-weight:700;background:var(--accent-soft)}
+.line .l{overflow-wrap:anywhere;min-width:0}
+.switch{display:flex;align-items:center;gap:10px}
+.switch input{width:22px;height:22px;accent-color:var(--accent)}
+.memo{white-space:pre-wrap}
+.sech{font-family:var(--display);font-size:1.25rem;margin:8px 0 0;padding-top:20px;border-top:2px solid var(--line)}
+.cmp{display:grid;grid-template-columns:1fr;gap:12px;padding:14px}
+@media (min-width:640px){.cmp{grid-template-columns:1fr 1fr}}
+.side{border:1px solid var(--line);border-radius:12px;padding:10px 12px 12px;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:0}
+.side legend{font-family:var(--display);font-weight:700;padding:0 6px}
+.side.a legend{color:var(--accent)} .side.b legend{color:var(--debt)}
+.pick{display:flex;flex-direction:column;gap:4px;min-width:0}
+.pick label{font-size:.8rem;color:var(--muted)}
+.pick select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:44px;width:100%;min-width:0}
+.cmprun{display:block;width:calc(100% - 28px);margin:0 14px 14px}
+.lock{padding:18px 16px;display:flex;flex-direction:column;gap:10px;max-width:420px;width:100%;margin:24px auto}
+.bk{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
+.bk label.btn{display:inline-flex;align-items:center;cursor:pointer}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:8px}
+.dot.a{background:var(--accent)} .dot.b{background:var(--debt)}
+td.best{color:var(--accent);background:var(--accent-soft)}
+th small{font-weight:400;font-size:.72rem;white-space:normal}
+
+.mailfoot{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:.85rem}
+.mailfoot .tiny{font-size:.72rem;color:var(--muted);text-decoration:underline;cursor:pointer}
+.mailfoot .bk{padding:0;justify-content:center}
+.mailfoot a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:center}
+.msg.due{border:1px solid var(--accent);background:var(--accent-soft);color:var(--ink);padding:14px}
+.msg.due .bk{padding:10px 0 0;justify-content:center}
+.msg{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:20px;color:var(--muted);text-align:center}
+
+.sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.45);border:0}
+.sheet-card{position:relative;background:var(--surface);width:100%;max-width:520px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px 20px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line)}
+@media (min-width:640px){.sheet{align-items:center}.sheet-card{border-radius:18px}}
+.sheet-card h3{font-family:var(--display);margin:0;font-size:1.1rem;text-wrap:balance}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.85rem;color:var(--muted)}
+.field input,.field select,.field textarea{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:46px;width:100%}
+.field input.amt{direction:ltr;text-align:left;font-size:1.2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.field textarea{min-height:96px;resize:vertical}
+.ferr{color:var(--out);font-size:.85rem;min-height:1.2em}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;min-height:46px;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);flex:1}
+.btn.danger{color:var(--out);border-color:var(--out)}
+@media (prefers-reduced-motion:no-preference){.sheet-card{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px)}to{transform:none}}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<div class="sheet" id="sheet" hidden>
+  <button class="sheet-back" type="button" data-act="close" aria-label="داخە"></button>
+  <form class="sheet-card" id="sheetForm" novalidate>
+    <h3 id="sheetTitle"></h3>
+    <div id="sheetFields"></div>
+    <div class="ferr" id="sheetErr" role="alert"></div>
+    <div class="actions">
+      <button class="btn primary" type="submit" id="sheetSave">خەزن بکە</button>
+      <button class="btn" type="button" data-act="close" id="sheetCancel">داخە</button>
+      <button class="btn danger" type="button" id="sheetDel" hidden>ژێ ببە</button>
+    </div>
+  </form>
+</div>
+
+<script>
+"use strict";
+const T = {
+  title:"حسابێن مە", income:"داهات", expense:"تێچوی", month:"هەیڤا", usd:"دولار", iqd:"دینار",
+  tabs:{month:"هەیڤانە", year:"سالانە", wealth:"دەین و سامان", memo:"تێبینی"}
+};
+const S = { locked:true, cmp:{}, years:{}, wealth:{assets:[],debts:[]}, year:null, month:new Date().getMonth(), tab:"month",
+            loaded:false, slow:false, nodb:false, err:false, status:"", statusErr:false };
+let DB = null;
+
+/* ---------- screen lock (hides the screen; sharing settings control real access) ---------- */
+const CODES = ["1tokmjgncx5", "4bjb85gfxt", "1p7zpsotvfx"];
+function hsh(str){ let h1=0xdeadbeef^77, h2=0x41c6ce57^77; for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (4294967296*(2097151&h2)+(h1>>>0)).toString(36); }
+function digits(s){ return String(s||"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/\D/g,""); }
+/* changing anything needs the edit code; the other codes only open the page for reading */
+const EDIT_CODES = ["2d5mrfvb2ff"], isEdit = h => EDIT_CODES.indexOf(h) >= 0;
+const EDIT_ACTS = {cell:1,rowadd:1,rowedit:1,adjadd:1,adjedit:1,fixed:1,wadd:1,wedit:1,memoadd:1,memoedit:1,addyear:1,restoreyes:1};
+function askEdit(then){
+  openSheet({ title:"بو گوهۆڕینێ ژمارا نهێنی یا دەستکاریێ بنڤیسە", fields:[{id:"code",label:"ژمارا نهێنی",type:"pass",required:true}],
+    onSave(v){ if(!isEdit(hsh("hesab-me:"+digits(v.code)))) return "ژمارە خەلەتە. تو ب تنێ دشێی ببینی.";
+      S.canEdit = true; try{ sessionStorage.setItem("hesab.edit","1"); }catch(e){} if(then) setTimeout(then, 0); } });
+}
+try{ if(sessionStorage.getItem("hesab.ok")==="1") S.locked = false; if(sessionStorage.getItem("hesab.edit")==="1") S.canEdit = true; }catch(e){}
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const uid = () => "r" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+function fmt(n){ return (Math.round((+n||0)*100)/100).toLocaleString("en-US",{maximumFractionDigits:2}); }
+function money(n,cur){ const s = fmt(Math.abs(+n||0)); const neg = (+n||0) < 0 ? "-" : "";
+  return '<span class="num">' + (cur==="iqd" ? neg+s+" IQD" : neg+"$"+s) + "</span>"; }
+function parseAmount(str){
+  let s = String(str==null?"":str).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+    .replace(/[٬,،\s$]/g,"").replace(/٫/g,".");
+  if(s==="") return null;
+  if(!/^-?\d*\.?\d+$/.test(s)) return undefined;
+  return parseFloat(s);
+}
+/* Latin-script row names are shown and saved in Kurdish */
+const KU = {"deluxe":"دیلوکس","delexe":"دیلوکس","aqarat":"عەقارات","mallak":"مەلاک","skking":"سکای کینگ","skyking":"سکای کینگ","other":"یێن دی","other (دینار)":"یێن دی (دینار)","happy":"هاپی","kaman ausbildung":"ئاوسبیلدونگا کامانی"};
+const ku = n => KU[String(n||"").trim().toLowerCase()] || n;
+function norm(y){
+  y = y || {};
+  for(const k of ["income","expense"]){
+    y[k] = Array.isArray(y[k]) ? y[k] : [];
+    y[k].forEach(r=>{ r.id = r.id || uid(); r.name = ku(r.name || ""); r.cur = r.cur==="iqd" ? "iqd" : "usd";
+      const v = Array.isArray(r.v) ? r.v : []; r.v = Array.from({length:12},(_,i)=> typeof v[i]==="number" ? v[i] : null); });
+  }
+  y.adj = Array.isArray(y.adj) ? y.adj : []; y.adj.forEach(a=>{ if(a) a.name = ku(a.name); });
+  y.memo = Array.isArray(y.memo) ? y.memo : [];
+  y.notes = (y.notes && typeof y.notes==="object") ? y.notes : {};
+  y.carry = y.carry !== false;
+  if(typeof y.fixed !== "number") delete y.fixed;
+  return y;
+}
+function normW(w){ w = w || {}; return { assets:Array.isArray(w.assets)?w.assets:[], debts:Array.isArray(w.debts)?w.debts:[] }; }
+
+/* ---------- money logic ---------- */
+const yearIds = () => Object.keys(S.years).sort();
+function total(y, kind, cur, m){
+  return y[kind].filter(r=>r.cur===cur).reduce((a,r)=> a + (m==null ? r.v.reduce((b,x)=>b+(+x||0),0) : (+r.v[m]||0)), 0);
+}
+function hasCur(y, cur){ return y.income.concat(y.expense).some(r=>r.cur===cur); }
+function prevId(id){ const ids = yearIds().filter(x=>x<id); return ids.length ? ids[ids.length-1] : null; }
+function result(id, seen){
+  const y = S.years[id]; if(!y) return 0;
+  if(typeof y.fixed === "number") return y.fixed;
+  seen = seen || {}; if(seen[id]) return 0; seen[id] = 1;
+  let r = total(y,"income","usd") - total(y,"expense","usd") + y.adj.reduce((a,x)=>a+(+x.amount||0),0);
+  if(y.carry){ const p = prevId(id); if(p) r += result(p, seen); }
+  return r;
+}
+const sumList = l => l.reduce((a,x)=>a+(+x.amount||0),0);
+
+/* ---------- saving: on this device (localStorage) ---------- */
+const KEY = "hesab.data.v1";
+const SEED = {"years":{"2027":{"income":[{"id":"i2","name":"DELUXE","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i3","name":"Aqarat","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i4","name":"Mallak","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i5","name":"SKKING","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i6","name":"کاوار زانکو زاخو","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i7","name":"شیلان","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i8","name":"ستێرین","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i9","name":"سومەیا","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"expense":[{"id":"e17","name":"مال","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e18","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e19","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e20","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e21","name":"زانا","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e22","name":"سامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e23","name":"Mallak","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e24","name":"Deluxe","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e25","name":"Skyking","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e26","name":"Other","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e27","name":"مال (دینار)","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e28","name":"کاوار (دینار)","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e29","name":"شیلان (دینار)","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e30","name":"ستێرین (دینار)","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e31","name":"سومەیا (دینار)","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e32","name":"Other (دینار)","cur":"iqd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"adj":[],"memo":[],"notes":{},"carry":true},"2026":{"income":[{"id":"i2","name":"DELUXE","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i3","name":"Aqarat","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i4","name":"Mallak","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i5","name":"SKKING","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i6","name":"کاوار زانکو زاخو","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i7","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i8","name":"ستێرین","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i9","name":"سومەییا","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"expense":[{"id":"e19","name":"مال","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e20","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e21","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e22","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e23","name":"زانا","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e24","name":"سامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e25","name":"Mallak","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e26","name":"Delexe","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e27","name":"Skyking","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e28","name":"Other","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"adj":[],"memo":[],"notes":{},"carry":true},"2025":{"income":[{"id":"i2","name":"DELUXE","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i3","name":"کامان ریکلام","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i4","name":"Aqarat","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i5","name":"SKKING","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i6","name":"کاوار زانکو زاخو","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i7","name":"کاوار زانکو جیهان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i8","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i9","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i10","name":"ستێرین","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i11","name":"HAPPY","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"expense":[{"id":"e19","name":"مال","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e20","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e21","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e22","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e23","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e24","name":"Mallak","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e25","name":"زانا","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e26","name":"سامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"adj":[],"memo":[],"notes":{},"carry":true},"2024":{"income":[{"id":"i3","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i4","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i5","name":"کاوار زانکو زاخو","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i6","name":"کاوار زانکو جیهان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i7","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i8","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i9","name":"زانا","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i13","name":"کامان ریکلام","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"expense":[{"id":"e20","name":"معصوم","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e21","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e22","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e23","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e24","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e26","name":"زانا","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e27","name":"سامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e29","name":"کارزان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"adj":[],"memo":[],"notes":{},"carry":true},"2023":{"income":[{"id":"i3","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i4","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i5","name":"کاوار موچە","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i6","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"i7","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"expense":[{"id":"e19","name":"معصوم","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e20","name":"کامان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e21","name":"شیلان","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e22","name":"کاوار","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e23","name":"حکمەت","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"e24","name":"ستێرین","cur":"usd","v":[null,null,null,null,null,null,null,null,null,null,null,null]}],"adj":[],"memo":[],"notes":{},"carry":true}},"wealth":{"assets":[],"debts":[]}};
+function setStatus(t, err){ S.status = t; S.statusErr = !!err; const el = $("status"); if(el){ el.textContent = t; el.className = "status" + (err?" err":""); } }
+/* data lives in the artifact database (one doc per year + one for wealth) so the monthly email copy can be made from it; localStorage is only a cache / offline fallback */
+const dirty = {}; let flushing = false;
+function persist(key){
+  let ok = true;
+  try{ localStorage.setItem(KEY, JSON.stringify({years:S.years, wealth:S.wealth})); localStorage.setItem("hesab.unsynced","1"); }catch(e){ ok = false; }
+  if(!DB){ if(ok) setStatus("خەزن بوو ل سەر ڤی ئامیری ✓"); else setStatus("خەزن نەبوو ل سەر ڤی ئامیری. کوپیەکێ دابگرە.", true); return; }
+  if(key) dirty[key] = 1; else markAll();
+  flush();
+}
+function markAll(){ yearIds().forEach(id=>{ dirty["y:"+id] = 1; }); dirty.w = 1; }
+async function flush(){
+  if(!DB || flushing) return; flushing = true;
+  try{
+    for(;;){
+      const k = Object.keys(dirty)[0]; if(!k) break; delete dirty[k];
+      try{
+        const saved = new Date().toISOString();
+        if(k === "w") await DB.doc("meta/wealth").set({json:JSON.stringify(S.wealth), saved:saved});
+        else if(k.indexOf("d:") === 0) await DB.doc("years/"+k.slice(2)).delete();
+        else if(S.years[k.slice(2)]) await DB.doc("years/"+k.slice(2)).set({json:JSON.stringify(S.years[k.slice(2)]), saved:saved});
+      }catch(e){ dirty[k] = 1; setStatus("خەزن نەبوو. پەیوەندیێ بپشکنە و دووبارە هەول بدە.", true); return; }
+    }
+    try{ localStorage.removeItem("hesab.unsynced"); }catch(e){}
+    setStatus("خەزن بوو ✓");
+  } finally { flushing = false; }
+}
+const saveYear = id => persist("y:"+id);
+const saveWealth = () => persist("w");
+async function connectDb(){
+  let db = null;
+  try{ if(window.claude && window.claude.use) db = await window.claude.use("db"); }catch(e){ db = null; }
+  if(!db) return false;
+  const ys = await db.collection("years").get(), w = await db.doc("meta/wealth").get();
+  let uns = false; try{ uns = localStorage.getItem("hesab.unsynced")==="1" && !!localStorage.getItem(KEY); }catch(e){}
+  if(ys.empty || uns){ DB = db; markAll(); flush(); return true; }   /* nothing stored yet, or this device has changes made while the database was unreachable: this device's data goes up */
+  const d = {years:{}, wealth:S.wealth};
+  ys.docs.forEach(x=>{ try{ d.years[x.id] = JSON.parse(x.data().json); }catch(e){} });
+  if(w.exists){ try{ d.wealth = JSON.parse(w.data().json); }catch(e){} }
+  if(Object.keys(d.years).length){ loadData(d); try{ localStorage.setItem(KEY, JSON.stringify({years:S.years, wealth:S.wealth})); }catch(e){} }
+  DB = db; return true;
+}
+function loadData(d){ S.years = {}; Object.keys(d.years).forEach(k=>{ S.years[k] = norm(clone(d.years[k])); }); S.wealth = normW(clone(d.wealth || {})); }
+function today(){ const d = new Date(), p = n => String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
+
+/* ---------- Excel copy (.xlsx is built here, no library, works offline) + monthly email ---------- */
+const MAIL_TO = "Hikmatabdulqader918@gmail.com";
+const XMIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+const xe = s => String(s==null?"":s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g,"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function colName(i){ let s = ""; i++; while(i>0){ const r=(i-1)%26; s = String.fromCharCode(65+r)+s; i = Math.floor((i-1)/26); } return s; }
+/* cell: null | number | string | {v, b:bold}. Styles: 0 text, 1 number, 2 bold text, 3 bold number */
+function sheetXml(rows, widths){
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0" rightToLeft="1"/></sheetViews>';
+  if(widths) x += '<cols>'+widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join("")+'</cols>';
+  x += '<sheetData>';
+  rows.forEach((r,ri)=>{ x += '<row r="'+(ri+1)+'">';
+    r.forEach((c,ci)=>{ let v = c, b = 0; if(c && typeof c==="object"){ v = c.v; b = c.b ? 1 : 0; }
+      if(v==null || v==="") return; const ref = colName(ci)+(ri+1);
+      x += (typeof v==="number" && isFinite(v)) ? '<c r="'+ref+'" s="'+(b?3:1)+'"><v>'+v+'</v></c>'
+        : '<c r="'+ref+'" s="'+(b?2:0)+'" t="inlineStr"><is><t xml:space="preserve">'+xe(v)+'</t></is></c>'; });
+    x += '</row>'; });
+  return x + '</sheetData></worksheet>';
+}
+function yearRows(id){
+  const y = S.years[id], B = v => ({v:v,b:1}), ms = Array.from({length:12},(_,i)=>i), rows = [], iq = hasCur(y,"iqd"), p = prevId(id);
+  rows.push([B(T.title+" · "+id)]); rows.push([]);
+  rows.push([B("ناڤ"),B("دراڤ")].concat(ms.map(m=>B(T.month+" "+(m+1))),[B("کویێ گشتی")]));
+  for(const kind of ["income","expense"]){
+    rows.push([B(T[kind])]);
+    y[kind].forEach(r=>rows.push([r.name,T[r.cur]].concat(r.v.map(v=>v==null?null:v),[r.v.reduce((a,x)=>a+(+x||0),0)])));
+    for(const cur of (iq?["usd","iqd"]:["usd"])) rows.push([B("کویێ "+T[kind]),B(T[cur])].concat(ms.map(m=>B(total(y,kind,cur,m))),[B(total(y,kind,cur))]));
+    rows.push([]);
+  }
+  rows.push([B("ئەنجامێ سالێ")]);
+  if(typeof y.fixed === "number") rows.push(["ئەنجام ب دەستی هاتیە دانان",T.usd,y.fixed]);
+  else {
+    rows.push([T.income,T.usd,total(y,"income","usd")]); rows.push([T.expense,T.usd,-total(y,"expense","usd")]);
+    y.adj.forEach(a=>rows.push([a.name,T.usd,+a.amount||0]));
+    if(y.carry && p) rows.push(["پارێ مایی ژ سالا بەرێ "+p,T.usd,result(p)]);
+  }
+  rows.push([B("پارێ مایی"),B(T.usd),B(result(id))]);
+  const nk = Object.keys(y.notes);
+  if(nk.length){ rows.push([]); rows.push([B("تێبینیێن پارەیان")]); rows.push([B("ناڤ"),B(T.month),B("تێبینی")]);
+    for(const kind of ["income","expense"]) y[kind].forEach(r=>{ for(let m=0;m<12;m++){ const n = y.notes[r.id+":"+m]; if(n) rows.push([r.name, m+1, null, n]); } }); }
+  if(y.memo.length){ rows.push([]); rows.push([B(T.tabs.memo)]); y.memo.forEach(t=>rows.push([t])); }
+  return rows;
+}
+function wealthRows(){
+  const B = v => ({v:v,b:1}), rows = [[B(T.tabs.wealth)],[]];
+  for(const [key,title,sumLab] of [["assets","پارێ مە ل کیڤەیە","کویێ پارێ مە د تشتا را"],["debts","دەین","کویێ دەینی"]]){
+    rows.push([B(title),B(T.usd)]); S.wealth[key].forEach(a=>rows.push([a.name,+a.amount||0]));
+    rows.push([B(sumLab),B(sumList(S.wealth[key]))]); rows.push([]);
+  }
+  return rows;
+}
+function b64json(o){ const u = new TextEncoder().encode(JSON.stringify(o)); let s = ""; for(let i=0;i<u.length;i+=8192) s += String.fromCharCode.apply(null, u.subarray(i,i+8192)); return btoa(s); }
+const CRCT = (()=>{ const t = new Uint32Array(256); for(let n=0;n<256;n++){ let c = n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n] = c>>>0; } return t; })();
+function crc32(u){ let c = 0xFFFFFFFF; for(let i=0;i<u.length;i++) c = CRCT[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){
+  const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+  const d = new Date(), dt = ((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(), tm = (d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
+  files.forEach(f=>{ const nm = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data), n = data.length;
+    const h = new DataView(new ArrayBuffer(30)); h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(10,tm,true); h.setUint16(12,dt,true); h.setUint32(14,crc,true); h.setUint32(18,n,true); h.setUint32(22,n,true); h.setUint16(26,nm.length,true);
+    const c = new DataView(new ArrayBuffer(46)); c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(12,tm,true); c.setUint16(14,dt,true); c.setUint32(16,crc,true); c.setUint32(20,n,true); c.setUint32(24,n,true); c.setUint16(28,nm.length,true); c.setUint32(42,off,true);
+    parts.push(new Uint8Array(h.buffer), nm, data); cen.push(new Uint8Array(c.buffer), nm); off += 30+nm.length+n; });
+  const cs = cen.reduce((a,x)=>a+x.length,0), e = new DataView(new ArrayBuffer(22)); e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,cs,true); e.setUint32(16,off,true);
+  return new Blob(parts.concat(cen,[new Uint8Array(e.buffer)]), {type:XMIME});
+}
+function buildXlsx(){
+  const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"', HD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const sheets = yearIds().reverse().map(id=>({name:id, xml:sheetXml(yearRows(id), [24,9].concat(Array(12).fill(11),[14]))}));
+  sheets.push({name:T.tabs.wealth, xml:sheetXml(wealthRows(), [34,16])});
+  /* last sheet carries the full data, so this same Excel file can be restored into the app */
+  const b = b64json({app:"hesab-me", saved:new Date().toISOString(), years:S.years, wealth:S.wealth}), br = [["ئەڤ لاپەڕە بو ڤەگەڕاندنا داتایێ یە د پروگرامی دا. دەستکاری نەکە."]];
+  for(let i=0;i<b.length;i+=30000) br.push(["HB64:"+b.slice(i,i+30000)]);
+  sheets.push({name:"Backup", xml:sheetXml(br, [60])});
+  const files = [
+    {name:"[Content_Types].xml", text:HD+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+      + sheets.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join("")+'</Types>'},
+    {name:"_rels/.rels", text:HD+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+    {name:"xl/workbook.xml", text:HD+'<workbook '+NS+' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'
+      + sheets.map((s,i)=>'<sheet name="'+xe(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join("")+'</sheets></workbook>'},
+    {name:"xl/_rels/workbook.xml.rels", text:HD+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + sheets.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join("")
+      + '<Relationship Id="rId'+(sheets.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+    {name:"xl/styles.xml", text:HD+'<styleSheet '+NS+'><numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="164" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1" applyNumberFormat="1"/></cellXfs></styleSheet>'}
+  ].concat(sheets.map((s,i)=>({name:"xl/worksheets/sheet"+(i+1)+".xml", text:s.xml})));
+  return zipStore(files);
+}
+/* reads the data back out of an Excel copy made by buildXlsx (only the untouched file, not one re-saved in Excel) */
+function dataFromXlsx(buf){
+  const txt = new TextDecoder("utf-8").decode(buf), re = /HB64:([A-Za-z0-9+\/=]+)/g; let b = "", m;
+  while((m = re.exec(txt))) b += m[1];
+  if(!b) return null;
+  const bin = atob(b), u = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i] = bin.charCodeAt(i);
+  return JSON.parse(new TextDecoder("utf-8").decode(u));
+}
+async function download(blob, name){
+  let dl = null; try{ if(window.claude && window.claude.use) dl = await window.claude.use("downloads"); }catch(e){}
+  if(dl){ try{ await dl.save({filename:name, data:blob}); }catch(e){} return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+}
+const xlsxName = () => "Hesaben_me_"+today()+".xlsx";
+/* owner's own choice, never automatic: makes the Excel file, then opens a normal email to MAIL_TO so they attach and send it themselves */
+async function mailCopy(){
+  let blob; const name = xlsxName();
+  try{ blob = buildXlsx(); }catch(e){ S.mailMsg = "فایلا ئێکسل چێ نەبوو. دووبارە هەول بدە."; S.mailHref = ""; render(); return; }
+  const subj = T.title+" - کوپیا ئێکسل - "+today();
+  const href = "mailto:"+MAIL_TO+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent("کوپیا ئێکسل یا حسابان: "+name);
+  const inClaude = !!(window.claude && window.claude.use);
+  if(!inClaude){
+    let file = null, can = false;
+    try{ file = new File([blob], name, {type:XMIME}); can = !!(navigator.canShare && navigator.canShare({files:[file]})); }catch(e){}
+    if(can){
+      try{ if(navigator.clipboard) navigator.clipboard.writeText(MAIL_TO).catch(()=>{}); }catch(e){}
+      try{ await navigator.share({files:[file], title:subj, text:subj}); S.mailMsg = "ئەپێ ئیمەیلی هلبژێرە. ناڤێ وەرگری: "+MAIL_TO+" (هاتیە کوپیکرن)."; S.mailHref = ""; render(); return; }
+      catch(err){ if(err && err.name==="AbortError") return; }
+    }
+  }
+  await download(blob, name);
+  S.mailMsg = "فایلا «"+name+"» هاتە داگرتن. نوکە ئیمەیلێ ڤەکە، وێ فایلێ پێڤە بکە (📎) و بهنێرە."; S.mailHref = href; render();
+  if(!inClaude) setTimeout(()=>{ location.href = href; }, 800);
+}
+function viewMail(){
+  if(!S.canEdit) return "";
+  let h = '<div class="mailfoot"><button class="btn primary" data-act="mailcopy">بهنێرە</button>';
+  if(S.mailMsg) h += '<div class="empty-note">'+esc(S.mailMsg)+'</div>';
+  if(S.mailHref) h += '<a class="btn" href="'+esc(S.mailHref)+'" target="_blank" rel="noopener">ئیمەیلێ ڤەکە</a>';
+  h += '<label class="tiny" for="restoreFile">ڤەگەڕاندن ژ فایلێ</label><input type="file" id="restoreFile" accept=".json,.xlsx,application/json,'+XMIME+'" hidden>';
+  if(S.restoreErr) h += '<div class="empty-note" style="color:var(--out)">'+esc(S.restoreErr)+'</div>';
+  if(S.pending) h += '<div class="empty-note">ئەڤ کوپیە (<span class="num">'+esc(Object.keys(S.pending.years).sort().join(", "))+'</span>) دێ جهێ هەمی داتایا نوکە گریت.</div><div class="bk"><button class="btn danger" data-act="restoreyes">بەلێ، ڤەگەڕینە</button><button class="btn" data-act="restoreno">نەخێر</button></div>';
+  return h + '</div>';
+}
+
+/* ---------- render ---------- */
+function render(){
+  const keep = {};
+  document.querySelectorAll("[data-keep]").forEach(el=>keep[el.dataset.keep]=el.scrollLeft);
+  $("app").innerHTML = view();
+  document.querySelectorAll("[data-keep]").forEach(el=>{ if(keep[el.dataset.keep]!=null) el.scrollLeft = keep[el.dataset.keep]; });
+}
+function view(){
+  if(S.locked) return '<header class="top"><h1>'+T.title+'</h1></header><form class="card lock" id="lockForm" novalidate><div class="field"><label for="lockCode">ژمارا نهێنی بنڤیسە</label><input class="amt" id="lockCode" type="password" inputmode="numeric" autocomplete="off"></div><div class="ferr" id="lockErr" role="alert"></div><button class="btn primary" type="submit">ڤەکە</button></form>';
+  let h = '<header class="top"><h1>'+T.title+'</h1><div id="status" class="status'+(S.statusErr?" err":"")+'" role="status">'+esc(S.status)+'</div><button class="chip ghost" data-act="lock">قفل بکە</button></header>';
+  if(S.nodb) return h + '<div class="msg">داتا ل ڤێرە ناهێتە بارکرن. ڤێ لاپەڕێ ل ناڤ Claude ڤەکە.</div>';
+  if(!S.loaded) return h + '<div class="msg">'+(S.slow ? "هێشتا داتا نەگەهشتیە. هیڤیە چاڤەرێ بە." : "داتا دهێتە بارکرن…")+'</div>';
+  if(S.err) h += '<div class="msg">پەیوەندی دگەل داتایێ نەما. لاپەڕێ دووبارە ڤەکە.</div>';
+  const ids = yearIds();
+  h += '<nav class="chips" data-keep="years" aria-label="سال">' + ids.map(id=>'<button class="chip" data-act="year" data-id="'+esc(id)+'" aria-pressed="'+(id===S.year)+'"><span class="num">'+esc(id)+'</span></button>').join("")
+     + '<button class="chip ghost" data-act="addyear">+ سال</button></nav>';
+  const y = S.years[S.year];
+  if(!y) return h + '<div class="msg">هێشتا چ سال نینن. ب «+ سال» دەست پێ بکە.</div>';
+  const inc = total(y,"income","usd"), exp = total(y,"expense","usd"), res = result(S.year), debt = sumList(S.wealth.debts);
+  const iq = hasCur(y,"iqd");
+  h += '<section class="tiles" aria-label="کورتیا سالێ">'
+    + tile("in","داهاتێ سالێ",money(inc,"usd"), iq ? money(total(y,"income","iqd"),"iqd") : "")
+    + tile("out","تێچویێ سالێ",money(exp,"usd"), iq ? money(total(y,"expense","iqd"),"iqd") : "")
+    + tile("main","پارێ مایی ل سالا "+'<span class="num">'+esc(S.year)+'</span>',money(res,"usd"), "")
+    + tile("in","کویێ پارێ مە د تشتا را",money(sumList(S.wealth.assets),"usd"), "")
+    + tile("debt","کویێ دەینی",money(debt,"usd"), "")
+    + '</section>';
+  h += '<div class="tabs" role="tablist">' + Object.keys(T.tabs).map(k=>'<button class="tab" role="tab" data-act="tab" data-id="'+k+'" aria-selected="'+(S.tab===k)+'">'+T.tabs[k]+'</button>').join("") + '</div>';
+  h += S.tab==="month" ? viewMonth(y) : S.tab==="year" ? viewYear(y) : S.tab==="wealth" ? viewWealth() : viewMemo(y);
+  h += viewCompare() + viewBackup() + viewMail();
+  return h;
+}
+function tile(cls,lab,val,sub){ return '<div class="tile '+cls+'"><span class="lab">'+lab+'</span><span class="val">'+val+'</span>'+(sub?'<span class="sub">'+sub+'</span>':'')+'</div>'; }
+
+function viewMonth(y){
+  const m = S.month, iq = hasCur(y,"iqd");
+  let h = '<nav class="chips" data-keep="months" aria-label="هەیڤ">' + Array.from({length:12},(_,i)=>'<button class="chip" data-act="month" data-id="'+i+'" aria-pressed="'+(i===m)+'">'+T.month+' <span class="num">'+(i+1)+'</span></button>').join("") + '</nav>';
+  const a = total(y,"income","usd",m), b = total(y,"expense","usd",m);
+  h += '<section class="mtiles">'
+    + tile("in","داهاتێ هەیڤێ",money(a,"usd"), iq?money(total(y,"income","iqd",m),"iqd"):"")
+    + tile("out","تێچویێ هەیڤێ",money(b,"usd"), iq?money(total(y,"expense","iqd",m),"iqd"):"")
+    + tile("","مایی ژ هەیڤێ",money(a-b,"usd"), iq?money(total(y,"income","iqd",m)-total(y,"expense","iqd",m),"iqd"):"")
+    + '</section>';
+  for(const kind of ["income","expense"]){
+    h += '<section class="card '+(kind==="income"?"in":"out")+'"><div class="card-h"><h2>'+T[kind]+' · '+T.month+' <span class="num">'+(m+1)+'</span></h2><span class="tot">'+money(kind==="income"?a:b,"usd")+'</span></div><div class="rows">';
+    if(!y[kind].length) h += '<div class="empty-note">هێشتا چ ناڤ نینن.</div>';
+    y[kind].forEach(r=>{
+      const v = r.v[m], note = y.notes[r.id+":"+m];
+      h += '<div class="row"><button class="rowmain" data-act="cell" data-kind="'+kind+'" data-row="'+esc(r.id)+'" data-m="'+m+'">'
+        + '<span class="rname">'+esc(r.name)+(r.cur==="iqd"?'<small>'+T.iqd+'</small>':'')+'</span>'
+        + (v==null ? '<span class="ramt empty">+ پارە</span>' : '<span class="ramt">'+money(v,r.cur)+'</span>')
+        + (note ? '<span class="rnote">'+esc(note)+'</span>' : '')
+        + '</button><button class="rowmore" data-act="rowedit" data-kind="'+kind+'" data-row="'+esc(r.id)+'" aria-label="گوهۆڕینا ناڤی: '+esc(r.name)+'">⋯</button></div>';
+    });
+    h += '</div><button class="addbtn" data-act="rowadd" data-kind="'+kind+'">+ ناڤەکێ نوی</button></section>';
+  }
+  return h;
+}
+
+function viewYear(y){
+  const iq = hasCur(y,"iqd");
+  let h = "";
+  h += '<section class="card"><div class="tablewrap" data-keep="table"><table><thead><tr><th>ناڤ</th>'
+    + Array.from({length:12},(_,m)=>'<th><span class="num">'+(m+1)+'</span></th>').join("") + '<th>کویێ گشتی</th></tr></thead><tbody>';
+  for(const kind of ["income","expense"]){
+    h += '<tr class="sec"><th colspan="14">'+T[kind]+'</th></tr>';
+    y[kind].forEach(r=>{
+      h += '<tr><th>'+esc(r.name)+'</th>' + r.v.map((v,m)=>'<td><button class="cellb'+(y.notes[r.id+":"+m]?" has":"")+'" data-act="cell" data-kind="'+kind+'" data-row="'+esc(r.id)+'" data-m="'+m+'" aria-label="'+esc(r.name)+' '+T.month+' '+(m+1)+'"><span class="num">'+(v==null?"·":fmt(v))+'</span></button></td>').join("")
+        + '<td class="t"><span class="num">'+fmt(r.v.reduce((a,x)=>a+(+x||0),0))+'</span></td></tr>';
+    });
+    for(const cur of (iq?["usd","iqd"]:["usd"])){
+      h += '<tr class="sum"><th>کوی · '+T[cur]+'</th>' + Array.from({length:12},(_,m)=>'<td class="t"><span class="num">'+fmt(total(y,kind,cur,m))+'</span></td>').join("")
+        + '<td class="t"><span class="num">'+fmt(total(y,kind,cur))+'</span></td></tr>';
+    }
+  }
+  h += '</tbody></table></div></section>';
+
+  const p = prevId(S.year);
+  h += '<section class="card"><div class="card-h"><h2>ئەنجامێ سالێ چەوا دهێتە هژمارتن</h2></div><div class="lines">';
+  if(typeof y.fixed === "number"){
+    h += '<button class="line" data-act="fixed"><span class="l">ئەنجام ب دەستی هاتیە دانان (بو گوهۆڕینێ پێل بکە)</span>'+money(y.fixed,"usd")+'</button>';
+  } else {
+    h += '<div class="line"><span class="l">'+T.income+' ('+T.usd+')</span>'+money(total(y,"income","usd"),"usd")+'</div>'
+       + '<div class="line"><span class="l">'+T.expense+' ('+T.usd+')</span>'+money(-total(y,"expense","usd"),"usd")+'</div>';
+    y.adj.forEach((a,i)=>{ h += '<button class="line" data-act="adjedit" data-i="'+i+'"><span class="l">'+esc(a.name)+'</span>'+money(a.amount,"usd")+'</button>'; });
+    h += '<label class="line switch"><span class="l switch"><input type="checkbox" id="carryToggle" data-act="carry"'+(y.carry?" checked":"")+'> پارێ مایی ژ سالا بەرێ'+(p?' <span class="num">'+esc(p)+'</span>':'')+'</span>'+money(y.carry&&p?result(p):0,"usd")+'</label>';
+  }
+  h += '<div class="line total"><span class="l">پارێ مایی</span>'+money(result(S.year),"usd")+'</div></div>'
+    + (typeof y.fixed === "number" ? "" : '<button class="addbtn" data-act="adjadd">+ هژمارەکا دی (زێدە یان کێم)</button><button class="addbtn" data-act="fixed">ئەنجامی ب دەستی دانە</button>') + '</section>';
+  return h;
+}
+
+function sel(id, key, opts, val){ return '<select id="'+id+'" data-cmp="'+key+'">'+opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(o[0])===String(val)?" selected":"")+'>'+o[1]+'</option>').join("")+'</select>'; }
+function cmpNames(){
+  const seen = {}, out = [];
+  yearIds().slice().reverse().forEach(id=>{ for(const k of ["income","expense"]) S.years[id][k].forEach(r=>{
+    if(r.cur !== "usd") return; const key = r.name.trim().toLowerCase();
+    if(key && !seen[key]){ seen[key] = 1; out.push([key, esc(r.name.trim())]); } }); });
+  return out;
+}
+/* sum for one side: name ("*" = everyone), kind, in one year or all, in one month or all (USD rows only) */
+function cmpVal(sd, year, month){
+  let t = 0;
+  (year==="all" ? yearIds() : [year]).forEach(id=>{ const y = S.years[id]; if(!y) return;
+    y[sd.kind].forEach(r=>{ if(r.cur !== "usd") return; if(sd.name !== "*" && r.name.trim().toLowerCase() !== sd.name) return;
+      t += month==="all" ? r.v.reduce((a,x)=>a+(+x||0),0) : (+r.v[month]||0); }); });
+  return t;
+}
+function cmpBest(sd){
+  let by = null, bm = null;
+  yearIds().forEach(id=>{ const v = cmpVal(sd,id,"all"); if(v > 0 && (!by || v > by.v)) by = {id:id,v:v};
+    for(let m=0;m<12;m++){ const x = cmpVal(sd,id,m); if(x > 0 && (!bm || x > bm.v)) bm = {id:id,m:m,v:x}; } });
+  return {year:by, month:bm};
+}
+function initCmp(names){
+  const c = S.cmp, p = prevId(S.year);
+  if(!c.a) c.a = {name:"*",kind:"income",year:S.year,month:"all"};
+  if(!c.b) c.b = {name:"*",kind:"income",year:p || S.year,month:"all"};
+  for(const k of ["a","b"]){ const sd = c[k];
+    if(sd.year !== "all" && !S.years[sd.year]) sd.year = "all";
+    if(sd.name !== "*" && !names.some(n=>n[0]===sd.name)) sd.name = "*"; }
+}
+function cmpTable(head, rows, bestCols){
+  const max = {}; (bestCols||[]).forEach(ci=>{ max[ci] = Math.max.apply(null, rows.map(r=>r.n[ci])); });
+  return '<div class="tablewrap"><table><thead><tr>'+head.map(x=>'<th>'+x+'</th>').join("")+'</tr></thead><tbody>'
+    + rows.map(r=>'<tr><th>'+r.label+'</th>'+r.n.map((x,ci)=>'<td class="t'+(max[ci] > 0 && x === max[ci] ? ' best' : '')+'">'+money(x,"usd")+(max[ci] > 0 && x === max[ci] ? ' ★' : '')+'</td>').join("")+'</tr>').join("") + '</tbody></table></div>';
+}
+function viewCompare(){
+  const ids = yearIds(), names = [["*","هەمی ناڤ"]].concat(cmpNames());
+  initCmp(names);
+  const c = S.cmp, num = x => '<span class="num">'+esc(x)+'</span>';
+  const yo = [["all","هەمی سال"]].concat(ids.map(i=>[i,i])), mo = [["all","هەمی هەیڤ"]].concat(Array.from({length:12},(_,i)=>[i,T.month+" "+(i+1)])), ko = [["income",T.income],["expense",T.expense]];
+  const nm = sd => (names.find(n=>n[0]===sd.name) || names[0])[1];
+  const lab = sd => nm(sd)+' · '+T[sd.kind]+' · '+(sd.year==="all" ? "هەمی سال" : num(sd.year))+(sd.month==="all" ? "" : ' · '+T.month+' '+num(sd.month+1));
+  const side = {a:"ئێکەم", b:"دوویەم"};
+  let h = '<h2 class="sech">بەراوردی</h2><section class="card"><div class="cmp">';
+  for(const k of ["a","b"]){ const sd = c[k], f = (fid,label,opts,val) => '<div class="pick"><label for="cmp_'+k+'_'+fid+'">'+label+'</label>'+sel("cmp_"+k+"_"+fid, k+"."+fid, opts, val)+'</div>';
+    h += '<fieldset class="side '+k+'"><legend>'+side[k]+'</legend>'+f("name","ناڤ",names,sd.name)+f("kind","داهات یان تێچوی",ko,sd.kind)+f("year","سال",yo,sd.year)+f("month","هەیڤ",mo,sd.month)+'</fieldset>'; }
+  h += '</div><button class="btn primary cmprun" data-act="cmprun">بەراورد بکە</button></section>';
+  if(!c.shown) return h;
+
+  const va = cmpVal(c.a,c.a.year,c.a.month), vb = cmpVal(c.b,c.b.year,c.b.month), d = va - vb;
+  h += '<section class="card"><div class="card-h"><h2>ئەنجام</h2><span class="tot">'+T.usd+'</span></div><div class="lines">'
+    + '<div class="line"><span class="l"><b class="dot a"></b>'+side.a+': '+lab(c.a)+'</span>'+money(va,"usd")+'</div>'
+    + '<div class="line"><span class="l"><b class="dot b"></b>'+side.b+': '+lab(c.b)+'</span>'+money(vb,"usd")+'</div>'
+    + '<div class="line total"><span class="l">'+(d===0 ? "هەر دو وەک ئێکن" : (d>0 ? side.a : side.b)+' پترە ب')+'</span>'+(d===0 ? "" : money(Math.abs(d),"usd"))+'</div>';
+  return h + '</div></section>';
+}
+
+function viewBackup(){ return ""; }
+
+function viewWealth(){
+  let h = "";
+  for(const [key,title,cls,sumLab] of [["assets","پارێ مە ل کیڤەیە","in","کویێ پارێ مە د تشتا را"],["debts","دەین","debt","کویێ دەینی"]]){
+    const list = S.wealth[key];
+    h += '<section class="card '+cls+'"><div class="card-h"><h2>'+title+'</h2><span class="tot">'+money(sumList(list),"usd")+'</span></div><div class="lines">';
+    if(!list.length) h += '<div class="empty-note">هێشتا چ تشت نینە.</div>';
+    list.forEach((a,i)=>{ h += '<button class="line" data-act="wedit" data-list="'+key+'" data-i="'+i+'"><span class="l">'+esc(a.name)+'</span>'+money(a.amount,"usd")+'</button>'; });
+    h += '<div class="line total"><span class="l">'+sumLab+'</span>'+money(sumList(list),"usd")+'</div></div><button class="addbtn" data-act="wadd" data-list="'+key+'">+ زێدە بکە</button></section>';
+  }
+  return h;
+}
+function viewMemo(y){
+  let h = '<section class="card"><div class="card-h"><h2>تێبینیێن سالا <span class="num">'+esc(S.year)+'</span></h2><span class="tot"><span class="num">'+y.memo.length+'</span></span></div><div class="lines">';
+  if(!y.memo.length) h += '<div class="empty-note">هێشتا چ تێبینی نینە.</div>';
+  y.memo.forEach((t,i)=>{ h += '<button class="line memo" data-act="memoedit" data-i="'+i+'"><span class="l">'+esc(t)+'</span></button>'; });
+  h += '</div><button class="addbtn" data-act="memoadd">+ تێبینی</button></section>';
+  return h;
+}
+
+/* ---------- edit sheet ---------- */
+let sheetCfg = null, delArmed = false;
+function openSheet(cfg){
+  sheetCfg = cfg; delArmed = false;
+  $("sheetTitle").innerHTML = cfg.title;
+  $("sheetFields").innerHTML = cfg.fields.map(f=>{
+    const id = "f_"+f.id, v = f.value==null ? "" : f.value;
+    let ctl;
+    if(f.type==="textarea") ctl = '<textarea id="'+id+'">'+esc(v)+'</textarea>';
+    else if(f.type==="select") ctl = '<select id="'+id+'">'+f.options.map(o=>'<option value="'+o[0]+'"'+(o[0]===v?" selected":"")+'>'+o[1]+'</option>').join("")+'</select>';
+    else if(f.type==="pass") ctl = '<input class="amt" id="'+id+'" type="password" inputmode="numeric" autocomplete="off">';
+    else if(f.type==="amount") ctl = '<input class="amt" id="'+id+'" type="text" inputmode="decimal" autocomplete="off" value="'+esc(v)+'" placeholder="0">';
+    else ctl = '<input id="'+id+'" type="text" autocomplete="off" value="'+esc(v)+'">';
+    return '<div class="field"><label for="'+id+'">'+f.label+'</label>'+ctl+'</div>';
+  }).join("");
+  $("sheetErr").textContent = "";
+  const d = $("sheetDel"); d.hidden = !cfg.onDelete; d.textContent = "ژێ ببە";
+  $("sheet").hidden = false;
+  const first = $("f_"+cfg.fields[0].id); if(first){ first.focus(); if(first.select && cfg.fields[0].type!=="textarea") first.select(); }
+}
+function closeSheet(){ $("sheet").hidden = true; sheetCfg = null; }
+$("sheetForm").addEventListener("submit", e=>{
+  e.preventDefault(); if(!sheetCfg) return;
+  const vals = {};
+  for(const f of sheetCfg.fields){
+    const raw = $("f_"+f.id).value;
+    if(f.type==="amount"){ const n = parseAmount(raw); if(n===undefined || (n===null && f.required)){ $("sheetErr").textContent = "ژمارەکا دروست بنڤیسە."; $("f_"+f.id).focus(); return; } vals[f.id] = n; }
+    else { vals[f.id] = raw.trim(); if(f.required && !vals[f.id]){ $("sheetErr").textContent = "ئەڤ خانە نابیت ڤالا بیت."; $("f_"+f.id).focus(); return; } }
+  }
+  const err = sheetCfg.onSave(vals);
+  if(err){ $("sheetErr").textContent = err; return; }
+  closeSheet(); render();
+});
+$("sheetDel").addEventListener("click", ()=>{
+  if(!sheetCfg || !sheetCfg.onDelete) return;
+  if(!delArmed){ delArmed = true; $("sheetDel").textContent = "پشتراستی؟ بەلێ، ژێ ببە"; return; }
+  sheetCfg.onDelete(); closeSheet(); render();
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("sheet").hidden) closeSheet(); });
+
+/* ---------- actions ---------- */
+const curOpts = [["usd",T.usd],["iqd",T.iqd]];
+const findRow = (y,kind,id) => y[kind].find(r=>r.id===id);
+const A = {
+  close(){ closeSheet(); },
+  year(d){ S.year = d.id; render(); },
+  tab(d){ S.tab = d.id; try{ localStorage.setItem("hesab.tab", d.id); }catch(e){} render(); },
+  month(d){ S.month = +d.id; render(); },
+  cmprun(){ S.cmp.shown = true; render(); },
+  backup(){
+    const blob = new Blob([JSON.stringify({app:"hesab-me", saved:new Date().toISOString(), years:S.years, wealth:S.wealth}, null, 1)], {type:"application/json"});
+    download(blob, "Hesab_backup_"+today()+".json");
+    try{ localStorage.setItem("hesab.lastBackup", today()); }catch(e){}
+    render();
+  },
+  mailcopy(){ mailCopy(); },
+  xlsx(){ try{ download(buildXlsx(), xlsxName()); }catch(e){ S.mailMsg = "فایلا ئێکسل چێ نەبوو. دووبارە هەول بدە."; render(); } },
+  restoreyes(){ if(!S.pending) return; yearIds().forEach(id=>{ if(!S.pending.years[id]) dirty["d:"+id] = 1; }); loadData(S.pending); S.pending = null; S.year = null; pickYear(); persist(); render(); },
+  restoreno(){ S.pending = null; render(); },
+  lock(){ S.locked = true; S.canEdit = false; try{ sessionStorage.removeItem("hesab.ok"); sessionStorage.removeItem("hesab.edit"); }catch(e){} closeSheet(); render(); },
+  cell(d){
+    const y = S.years[S.year], r = findRow(y,d.kind,d.row), m = +d.m; if(!r) return;
+    openSheet({ title: esc(r.name)+' · '+T.month+' <span class="num">'+(m+1)+'</span> · <span class="num">'+esc(S.year)+'</span>',
+      fields:[{id:"amount",label:"بڕێ پارەی ("+T[r.cur]+")",type:"amount",value:r.v[m]},
+              {id:"note",label:"تێبینی: ئەڤ پارە بو چ چوویە / ژ کیڤە هاتیە؟",type:"textarea",value:y.notes[r.id+":"+m]}],
+      onSave(v){ r.v[m] = v.amount; if(v.note) y.notes[r.id+":"+m] = v.note; else delete y.notes[r.id+":"+m]; saveYear(S.year); } });
+  },
+  rowadd(d){
+    const y = S.years[S.year];
+    openSheet({ title:"ناڤەکێ نوی · "+T[d.kind], fields:[{id:"name",label:"ناڤ",type:"text",required:true},{id:"cur",label:"دراڤ",type:"select",options:curOpts,value:"usd"}],
+      onSave(v){ y[d.kind].push({id:uid(),name:v.name,cur:v.cur,v:Array(12).fill(null)}); saveYear(S.year); } });
+  },
+  rowedit(d){
+    const y = S.years[S.year], r = findRow(y,d.kind,d.row); if(!r) return;
+    openSheet({ title:"گوهۆڕینا ناڤی", fields:[{id:"name",label:"ناڤ",type:"text",value:r.name,required:true},{id:"cur",label:"دراڤ",type:"select",options:curOpts,value:r.cur}],
+      onSave(v){ r.name = v.name; r.cur = v.cur; saveYear(S.year); },
+      onDelete(){ y[d.kind] = y[d.kind].filter(x=>x!==r); Object.keys(y.notes).forEach(k=>{ if(k.indexOf(r.id+":")===0) delete y.notes[k]; }); saveYear(S.year); } });
+  },
+  adjadd(){ const y = S.years[S.year];
+    openSheet({ title:"هژمارەکا دی د ئەنجامی دا", fields:[{id:"name",label:"ناڤ",type:"text",required:true},{id:"amount",label:"بڕ ب دولاری (بو کێمکرنێ - دانە بەر)",type:"amount",required:true}],
+      onSave(v){ y.adj.push({name:v.name,amount:v.amount}); saveYear(S.year); } }); },
+  adjedit(d){ const y = S.years[S.year], a = y.adj[+d.i]; if(!a) return;
+    openSheet({ title:"هژمارەکا دی د ئەنجامی دا", fields:[{id:"name",label:"ناڤ",type:"text",value:a.name,required:true},{id:"amount",label:"بڕ ب دولاری (بو کێمکرنێ - دانە بەر)",type:"amount",value:a.amount,required:true}],
+      onSave(v){ a.name = v.name; a.amount = v.amount; saveYear(S.year); }, onDelete(){ y.adj.splice(+d.i,1); saveYear(S.year); } }); },
+  fixed(){ const y = S.years[S.year];
+    openSheet({ title:"ئەنجامێ سالێ ب دەستی", fields:[{id:"amount",label:"پارێ مایی ب دولاری (ڤالا بهێلە دا ب خو بهێتە هژمارتن)",type:"amount",value:y.fixed}],
+      onSave(v){ if(v.amount==null) delete y.fixed; else y.fixed = v.amount; saveYear(S.year); } }); },
+  wadd(d){ openSheet({ title: d.list==="debts" ? "دەینەکێ نوی" : "تشتەکێ نوی", fields:[{id:"name",label:"ناڤ",type:"text",required:true},{id:"amount",label:"بڕ ب دولاری",type:"amount",required:true}],
+      onSave(v){ S.wealth[d.list].push({name:v.name,amount:v.amount}); saveWealth(); } }); },
+  wedit(d){ const a = S.wealth[d.list][+d.i]; if(!a) return;
+    openSheet({ title: esc(a.name), fields:[{id:"name",label:"ناڤ",type:"text",value:a.name,required:true},{id:"amount",label:"بڕ ب دولاری",type:"amount",value:a.amount,required:true}],
+      onSave(v){ a.name = v.name; a.amount = v.amount; saveWealth(); }, onDelete(){ S.wealth[d.list].splice(+d.i,1); saveWealth(); } }); },
+  memoadd(){ const y = S.years[S.year];
+    openSheet({ title:"تێبینیەکا نوی", fields:[{id:"text",label:"تێبینی",type:"textarea",required:true}], onSave(v){ y.memo.push(v.text); saveYear(S.year); } }); },
+  memoedit(d){ const y = S.years[S.year], i = +d.i;
+    openSheet({ title:"تێبینی", fields:[{id:"text",label:"تێبینی",type:"textarea",value:y.memo[i],required:true}],
+      onSave(v){ y.memo[i] = v.text; saveYear(S.year); }, onDelete(){ y.memo.splice(i,1); saveYear(S.year); } }); },
+  addyear(){
+    const ids = yearIds(), last = ids[ids.length-1], guess = last ? String(+last+1) : String(new Date().getFullYear());
+    openSheet({ title:"سالا نوی", fields:[{id:"y",label:"سال (ناڤێن داهات و تێچویان ژ سالا دوماهیێ دهێنە وەرگرتن)",type:"amount",value:guess,required:true}],
+      onSave(v){
+        const id = String(v.y);
+        if(!/^\d{4}$/.test(id)) return "سالەکا دروست بنڤیسە، وەک 2028.";
+        if(S.years[id]) return "ئەڤ سالە یا هەی.";
+        const src = last ? S.years[last] : null, mk = k => src ? src[k].map(r=>({id:uid(),name:r.name,cur:r.cur,v:Array(12).fill(null)})) : [];
+        S.years[id] = norm({income:mk("income"),expense:mk("expense"),adj:[],memo:[],notes:{},carry:true});
+        S.year = id; S.month = 0; saveYear(id);
+      } });
+  }
+};
+document.addEventListener("click", e=>{
+  const el = e.target.closest("[data-act]"); if(!el) return;
+  const act = el.dataset.act; if(act==="carry") return;
+  if(!A[act]) return;
+  if(EDIT_ACTS[act] && !S.canEdit){ const d = Object.assign({}, el.dataset); askEdit(()=>A[act](d)); return; }
+  A[act](el.dataset);
+});
+document.addEventListener("change", e=>{
+  if(e.target && e.target.dataset && e.target.dataset.cmp){ const kf = e.target.dataset.cmp.split("."), v = e.target.value; S.cmp[kf[0]][kf[1]] = kf[1]==="month" ? (v==="all" ? "all" : +v) : v; S.cmp.shown = false; render(); return; }
+  if(e.target && e.target.id==="carryToggle" && !S.canEdit){ render(); askEdit(null); return; }
+  if(e.target && e.target.id==="carryToggle"){ const y = S.years[S.year]; y.carry = e.target.checked; saveYear(S.year); render(); }
+});
+
+/* ---------- boot ---------- */
+function pickYear(){
+  const ids = yearIds(); if(S.year && S.years[S.year]) return;
+  const now = String(new Date().getFullYear());
+  S.year = S.years[now] ? now : (ids.length ? ids[ids.length-1] : null);
+}
+let booted = false;
+document.addEventListener("submit", e=>{
+  if(!e.target || e.target.id !== "lockForm") return;
+  e.preventDefault();
+  const inp = $("lockCode");
+  const hc = hsh("hesab-me:"+digits(inp.value));
+  if(isEdit(hc)){ S.canEdit = true; try{ sessionStorage.setItem("hesab.edit","1"); }catch(err){} }
+  if(!isEdit(hc) && CODES.indexOf(hc) < 0){ $("lockErr").textContent = "ژمارە خەلەتە. دووبارە هەول بدە."; inp.value = ""; inp.focus(); return; }
+  S.locked = false; try{ sessionStorage.setItem("hesab.ok","1"); }catch(err){}
+  boot();
+});
+function boot(){
+  try{ const t = localStorage.getItem("hesab.tab"); if(t && T.tabs[t]) S.tab = t; }catch(e){}
+  if(!S.locked && !booted){
+    booted = true;
+    let d = null;
+    try{ d = JSON.parse(localStorage.getItem(KEY) || "null"); }catch(e){ d = null; }
+    loadData(d && d.years ? d : SEED);
+    const ready = () => { if(S.loaded) return; S.loaded = true; S.year = null; pickYear(); render(); };
+    if(window.claude && window.claude.use){
+      const t = setTimeout(ready, 12000);
+      connectDb().then(ok=>{ if(S.loaded && ok){ S.year = null; pickYear(); } }, ()=>{ setStatus("پەیوەندی دگەل داتایێ نەبوو. داتایا ڤی ئامیری دهێتە نیشاندان.", true); })
+        .then(()=>{ clearTimeout(t); if(S.loaded) render(); else ready(); });
+    } else { S.loaded = true; pickYear(); }
+  }
+  render();
+}
+document.addEventListener("change", e=>{
+  if(!e.target || e.target.id !== "restoreFile" || !e.target.files || !e.target.files[0]) return;
+  const r = new FileReader();
+  r.onload = () => { let d = null, x = false;
+    try{ const u = new Uint8Array(r.result); x = u[0]===0x50 && u[1]===0x4B; d = x ? dataFromXlsx(r.result) : JSON.parse(new TextDecoder("utf-8").decode(r.result)); }catch(err){ d = null; }
+    if(!d || !d.years || typeof d.years !== "object" || !Object.keys(d.years).length){ S.restoreErr = x ? "ئەڤ فایلا ئێکسل ناهێتە خواندن. فایلا ئەسلی یا د ئیمەیلی دا (بێ دەستکاری) بکاربینە." : "ئەڤ فایلە کوپیا ڤی پروگرامی نینە."; S.pending = null; }
+    else { S.pending = d; S.restoreErr = ""; }
+    render(); };
+  r.readAsArrayBuffer(e.target.files[0]); e.target.value = "";
+});
+boot();
+</script>
+</body>
+</html>
