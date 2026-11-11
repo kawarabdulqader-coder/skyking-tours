@@ -33,6 +33,23 @@
   @keyframes lgCard{from{opacity:0}to{opacity:1}}
   @keyframes lgIn{0%{opacity:0;transform:scale(.55) translateY(18px);filter:blur(8px) brightness(.6)}55%{opacity:1;transform:scale(1.07) translateY(-4px);filter:blur(0) brightness(1.25)}75%{transform:scale(.98)}100%{transform:scale(1);filter:none}}
   @keyframes lgShine{0%{left:-60%}100%{left:130%}}
+  .lg3{position:relative;aspect-ratio:800/462}
+  .lg3 .lgf{position:absolute;inset:0}
+  .lg3 img{position:absolute;display:block;max-width:none;height:auto;-webkit-user-drag:none;user-select:none}
+  .lg3 .lgb{inset:0;width:100%;height:100%}
+  .lg3 .wl{left:4%;top:18.18%;width:37.875%;transform-origin:94% 62%}
+  .lg3 .wr{left:58.125%;top:18.4%;width:37.875%;transform-origin:6% 62%}
+  .lg3 .lgt{left:37%;top:3.463%;width:26.125%}
+  .lg3 .lt{transform-origin:50% 85%;animation:ltIn .75s cubic-bezier(.2,.8,.25,1) calc(.95s + var(--i)*.1s) both,ltHop .7s ease-in-out calc(2.55s + var(--i)*.09s) 1}
+  @keyframes ltIn{0%{opacity:0;transform:translateY(85%) scale(.5) rotate(-14deg);filter:blur(5px) brightness(1.8)}55%{opacity:1;transform:translateY(-16%) scale(1.14) rotate(3deg);filter:blur(0) brightness(1.35)}78%{transform:translateY(5%) scale(.97) rotate(-1deg);filter:brightness(1)}100%{opacity:1;transform:none;filter:none}}
+  @keyframes ltHop{0%,100%{transform:none;filter:none}40%{transform:translateY(-22%) scale(1.08);filter:brightness(1.45)}70%{transform:translateY(4%) scale(.98)}}
+  .lg3.fly .lgf{animation:lgBob 1.25s linear 1 both}
+  .lg3.fly .wl{animation:wgL 1.25s linear 1 both}
+  .lg3.fly .wr{animation:wgR 1.25s linear 1 both}
+  @keyframes wgL{0%{transform:rotate(0) scale(1,1);animation-timing-function:cubic-bezier(.3,0,.3,1)}8%{transform:rotate(-3deg) scale(1,.98);animation-timing-function:cubic-bezier(.2,.6,.3,1)}30%{transform:rotate(16deg) scale(.95,1.07);animation-timing-function:cubic-bezier(.6,0,.85,.4)}50%{transform:rotate(-13deg) scale(1.02,.8);animation-timing-function:cubic-bezier(.2,.7,.3,1)}72%{transform:rotate(5deg) scale(.99,1.03);animation-timing-function:ease-in-out}88%{transform:rotate(-1.5deg) scale(1,.99);animation-timing-function:ease-out}100%{transform:rotate(0) scale(1,1)}}
+  @keyframes wgR{0%{transform:rotate(0) scale(1,1);animation-timing-function:cubic-bezier(.3,0,.3,1)}8%{transform:rotate(3deg) scale(1,.98);animation-timing-function:cubic-bezier(.2,.6,.3,1)}30%{transform:rotate(-16deg) scale(.95,1.07);animation-timing-function:cubic-bezier(.6,0,.85,.4)}50%{transform:rotate(13deg) scale(1.02,.8);animation-timing-function:cubic-bezier(.2,.7,.3,1)}72%{transform:rotate(-5deg) scale(.99,1.03);animation-timing-function:ease-in-out}88%{transform:rotate(1.5deg) scale(1,.99);animation-timing-function:ease-out}100%{transform:rotate(0) scale(1,1)}}
+  @keyframes lgBob{0%{transform:translateY(0);animation-timing-function:ease-in-out}30%{transform:translateY(2.2%);animation-timing-function:cubic-bezier(.6,0,.85,.4)}52%{transform:translateY(-3.4%);animation-timing-function:cubic-bezier(.2,.7,.3,1)}78%{transform:translateY(.8%);animation-timing-function:ease-out}100%{transform:translateY(0)}}
+  @media (prefers-reduced-motion:reduce){.lg3.fly .lgf,.lg3.fly .wl,.lg3.fly .wr,.lg3 .lt{animation:none}}
   @media (prefers-reduced-motion:reduce){.lgw,.logo,.lgw::after{animation:none}}
   .name{font-size:15px;font-weight:700;margin-top:14px;line-height:1.6}
   .tag{font-size:14px;color:var(--muted);margin-top:4px}
@@ -183,7 +200,7 @@
 </div>
 <div class="wrap">
   <header>
-    <div class="lgw"><img class="logo" src="img/8a540250f03cf664.jpg" alt="Sky King Travel &amp; Tourism logo"></div>
+    <div class="lgw"><div class="logo lg3" role="img" aria-label="Sky King Travel &amp; Tourism logo"><div class="lgf"><img class="lgb" src="img/ccfd13b652f12043.jpg" alt=""><img class="wg wl" src="img/c3722dc499af7454.webp" alt=""><img class="wg wr" src="img/f7283c6ac448d7b6.webp" alt=""><img class="lgt" src="img/30b91ecd829bc768.webp" alt=""><img class="lt" style="left:18.625%;top:66.883%;width:8.750%;--i:0" src="img/17b3012e5bc3ab56.webp" alt=""><img class="lt" style="left:27.875%;top:67.100%;width:8.750%;--i:1" src="img/86e8d3230b78fd1a.webp" alt=""><img class="lt" style="left:36.250%;top:67.100%;width:9.375%;--i:2" src="img/2dc2ad33da36f38a.webp" alt=""><img class="lt" style="left:49.500%;top:67.100%;width:8.750%;--i:3" src="img/cbd22a544577dc5e.webp" alt=""><img class="lt" style="left:58.625%;top:67.100%;width:3.000%;--i:4" src="img/63705f2a62a88214.webp" alt=""><img class="lt" style="left:62.500%;top:67.100%;width:8.875%;--i:5" src="img/51bb1e13fe4cbdb0.webp" alt=""><img class="lt" style="left:71.875%;top:66.883%;width:10.000%;--i:6" src="img/8a6164132707089d.webp" alt=""></div></div></div>
     <p class="name" data-t="name"></p>
   </header>
   <section class="mediatop">
@@ -443,4 +460,7 @@ setLang(start);
 document.querySelectorAll("#vvp video").forEach(v=>v.addEventListener("play",()=>document.querySelectorAll("#vvp video").forEach(o=>{if(o!==v)o.pause()})))})();
 </script>
 <script>(()=>{const lb=document.getElementById("lbx"),im=lb.querySelector("img");document.querySelectorAll(".vpg button").forEach(b=>b.onclick=()=>{im.src=b.dataset.src;lb.hidden=false});lb.onclick=()=>lb.hidden=true})();</script>
+<script>(()=>{const L=document.querySelector(".lg3");if(!L)return;
+L.addEventListener("animationend",e=>{if(e.animationName==="wgL")L.classList.remove("fly")});
+setTimeout(()=>L.classList.add("fly"),1900)})();</script>
 </body></html>

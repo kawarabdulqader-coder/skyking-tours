@@ -125,7 +125,32 @@ footer .soc{justify-content:safe center}
 <body>
 <style>.hero{padding-top:0!important}.hero h1{margin-top:20px!important}.hero img.lg{width:100%!important;max-width:none!important;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 85%,transparent 100%)!important;mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 85%,transparent 100%)!important}
 @media (min-width:700px){.hero img.lg{width:min(100%,640px)!important;-webkit-mask-image:radial-gradient(ellipse 72% 70% at 50% 50%,#000 60%,transparent 100%)!important;mask-image:radial-gradient(ellipse 72% 70% at 50% 50%,#000 60%,transparent 100%)!important}}</style>
-<div class="hero"><img class="lg" src="../img/b8666e8c0f1e197a.jpg" alt="Sky King Travel &amp; Tourism"><h1 id="ttl"></h1><div class="sub" id="sub"></div></div>
+<style>
+.skl{position:relative;display:block;aspect-ratio:800/462;margin:0 auto;overflow:hidden}
+.skl .lgf{position:absolute;inset:0;animation:sklBob 1.25s linear 1.3s 1 both}
+.skl img{position:absolute!important;display:block!important;max-width:none!important;height:auto!important;margin:0!important;-webkit-mask-image:none!important;mask-image:none!important;-webkit-user-drag:none;user-select:none}
+.skl .lgb{left:0;top:0;width:100%!important;height:100%!important}
+.skl .wl{left:4%;top:18.18%;width:37.875%!important;transform-origin:94% 62%;animation:sklL 1.25s linear 1.3s 1 both}
+.skl .wr{left:58.125%;top:18.4%;width:37.875%!important;transform-origin:6% 62%;animation:sklR 1.25s linear 1.3s 1 both}
+.skl .lgt{left:37%;top:3.463%;width:26.125%!important}
+.skl .l0{left:18.625%;top:66.883%;width:8.750%!important;--i:0}
+.skl .l1{left:27.875%;top:67.100%;width:8.750%!important;--i:1}
+.skl .l2{left:36.250%;top:67.100%;width:9.375%!important;--i:2}
+.skl .l3{left:49.500%;top:67.100%;width:8.750%!important;--i:3}
+.skl .l4{left:58.625%;top:67.100%;width:3.000%!important;--i:4}
+.skl .l5{left:62.500%;top:67.100%;width:8.875%!important;--i:5}
+.skl .l6{left:71.875%;top:66.883%;width:10.000%!important;--i:6}
+.skl .lt{transform-origin:50% 85%;animation:sklIn .75s cubic-bezier(.2,.8,.25,1) calc(.35s + var(--i)*.1s) both,sklHop .7s ease-in-out calc(1.95s + var(--i)*.09s) 1}
+@keyframes sklIn{0%{opacity:0;transform:translateY(85%) scale(.5) rotate(-14deg);filter:blur(5px) brightness(1.8)}55%{opacity:1;transform:translateY(-16%) scale(1.14) rotate(3deg);filter:blur(0) brightness(1.35)}78%{transform:translateY(5%) scale(.97) rotate(-1deg);filter:brightness(1)}100%{opacity:1;transform:none;filter:none}}
+@keyframes sklHop{0%,100%{transform:none;filter:none}40%{transform:translateY(-22%) scale(1.08);filter:brightness(1.45)}70%{transform:translateY(4%) scale(.98)}}
+@keyframes sklL{0%{transform:rotate(0) scale(1,1);animation-timing-function:cubic-bezier(.3,0,.3,1)}8%{transform:rotate(-3deg) scale(1,.98);animation-timing-function:cubic-bezier(.2,.6,.3,1)}30%{transform:rotate(16deg) scale(.95,1.07);animation-timing-function:cubic-bezier(.6,0,.85,.4)}50%{transform:rotate(-13deg) scale(1.02,.8);animation-timing-function:cubic-bezier(.2,.7,.3,1)}72%{transform:rotate(5deg) scale(.99,1.03);animation-timing-function:ease-in-out}88%{transform:rotate(-1.5deg) scale(1,.99);animation-timing-function:ease-out}100%{transform:rotate(0) scale(1,1)}}
+@keyframes sklR{0%{transform:rotate(0) scale(1,1);animation-timing-function:cubic-bezier(.3,0,.3,1)}8%{transform:rotate(3deg) scale(1,.98);animation-timing-function:cubic-bezier(.2,.6,.3,1)}30%{transform:rotate(-16deg) scale(.95,1.07);animation-timing-function:cubic-bezier(.6,0,.85,.4)}50%{transform:rotate(13deg) scale(1.02,.8);animation-timing-function:cubic-bezier(.2,.7,.3,1)}72%{transform:rotate(-5deg) scale(.99,1.03);animation-timing-function:ease-in-out}88%{transform:rotate(1.5deg) scale(1,.99);animation-timing-function:ease-out}100%{transform:rotate(0) scale(1,1)}}
+@keyframes sklBob{0%{transform:translateY(0);animation-timing-function:ease-in-out}30%{transform:translateY(2.2%);animation-timing-function:cubic-bezier(.6,0,.85,.4)}52%{transform:translateY(-3.4%);animation-timing-function:cubic-bezier(.2,.7,.3,1)}78%{transform:translateY(.8%);animation-timing-function:ease-out}100%{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.skl *{animation:none!important}}
+.hero .skl{width:100%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 85%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 85%,transparent 100%)}
+@media (min-width:700px){.hero .skl{width:min(100%,640px);-webkit-mask-image:radial-gradient(ellipse 72% 70% at 50% 50%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 72% 70% at 50% 50%,#000 60%,transparent 100%)}}
+</style>
+<div class="hero"><div class="lg skl" role="img" aria-label="Sky King Travel &amp; Tourism"><div class="lgf"><img class="lgb" src="../img/ccfd13b652f12043.jpg" alt=""><img class="wl" src="../img/c3722dc499af7454.webp" alt=""><img class="wr" src="../img/f7283c6ac448d7b6.webp" alt=""><img class="lgt" src="../img/30b91ecd829bc768.webp" alt=""><img class="lt l0" src="../img/17b3012e5bc3ab56.webp" alt=""><img class="lt l1" src="../img/86e8d3230b78fd1a.webp" alt=""><img class="lt l2" src="../img/2dc2ad33da36f38a.webp" alt=""><img class="lt l3" src="../img/cbd22a544577dc5e.webp" alt=""><img class="lt l4" src="../img/63705f2a62a88214.webp" alt=""><img class="lt l5" src="../img/51bb1e13fe4cbdb0.webp" alt=""><img class="lt l6" src="../img/8a6164132707089d.webp" alt=""></div></div><h1 id="ttl"></h1><div class="sub" id="sub"></div></div>
 <div class="top"><div class="wrap" id="nav"></div></div>
 <div class="wrap" id="app"></div>
 <div class="toast" id="toast"></div>

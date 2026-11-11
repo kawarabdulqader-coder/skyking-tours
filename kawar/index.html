@@ -21,7 +21,7 @@ button{font:inherit;cursor:pointer}
 .thm{width:34px;height:32px;padding:0;display:grid;place-items:center}
 .thm svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 header{text-align:center}
-.av{display:block;width:124px;height:124px;object-fit:cover;object-position:50% 30%;border-radius:50%;margin:0 auto 14px;box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--gold)}
+.av{display:block;width:124px;height:124px;object-fit:cover;object-position:50% 30%;background:var(--card);pointer-events:none;border-radius:50%;margin:0 auto 14px;box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--gold)}
 h1{font-size:24px;font-weight:800;text-wrap:balance}
 .role{color:var(--mut);font-size:14px;line-height:1.6;margin-top:8px;text-wrap:balance}
 .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
@@ -119,7 +119,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:30px}
   </div>
 
   <header>
-    <img class="av" src="../img/c29633bc8339314c.jpg" alt="Kawar Maasom Abdulqader">
+    <video class="av" id="avv" autoplay muted loop playsinline preload="auto" disablepictureinpicture poster="../img/cca86385e8a23e44.jpg" aria-label="Kawar Maasom Abdulqader"><source src="avatar.mp4" type="video/mp4"></video>
     <h1 data-t="nm"></h1>
     <p class="role" data-t="role"></p>
     <div class="tags" id="tg"></div>
@@ -157,8 +157,33 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:30px}
       <p class="hint" id="qrHint"></p>
     </div>
 
-    <a class="skb" target="_blank" rel="noopener" href="https://tinyurl.com/skyking-service">
-      <span class="skl"><img src="../img/c082cc94e9918311.jpg" alt="Sky King"></span>
+    <style>
+.skx{position:relative;display:block;aspect-ratio:800/462;margin:0 auto;overflow:hidden}
+.skx .lgf{display:block;position:absolute;inset:0;animation:skxBob 1.25s linear 1.3s 1 both}
+.skx img{position:absolute!important;display:block!important;max-width:none!important;height:auto!important;margin:0!important;-webkit-mask-image:none!important;mask-image:none!important;-webkit-user-drag:none;user-select:none}
+.skx .lgb{left:0;top:0;width:100%!important;height:100%!important}
+.skx .wl{left:4%;top:18.18%;width:37.875%!important;transform-origin:94% 62%;animation:skxL 1.25s linear 1.3s 1 both}
+.skx .wr{left:58.125%;top:18.4%;width:37.875%!important;transform-origin:6% 62%;animation:skxR 1.25s linear 1.3s 1 both}
+.skx .lgt{left:37%;top:3.463%;width:26.125%!important}
+.skx .l0{left:18.625%;top:66.883%;width:8.750%!important;--i:0}
+.skx .l1{left:27.875%;top:67.100%;width:8.750%!important;--i:1}
+.skx .l2{left:36.250%;top:67.100%;width:9.375%!important;--i:2}
+.skx .l3{left:49.500%;top:67.100%;width:8.750%!important;--i:3}
+.skx .l4{left:58.625%;top:67.100%;width:3.000%!important;--i:4}
+.skx .l5{left:62.500%;top:67.100%;width:8.875%!important;--i:5}
+.skx .l6{left:71.875%;top:66.883%;width:10.000%!important;--i:6}
+.skx .lt{transform-origin:50% 85%;animation:skxIn .75s cubic-bezier(.2,.8,.25,1) calc(.35s + var(--i)*.1s) both,skxHop .7s ease-in-out calc(1.95s + var(--i)*.09s) 1}
+@keyframes skxIn{0%{opacity:0;transform:translateY(85%) scale(.5) rotate(-14deg);filter:blur(5px) brightness(1.8)}55%{opacity:1;transform:translateY(-16%) scale(1.14) rotate(3deg);filter:blur(0) brightness(1.35)}78%{transform:translateY(5%) scale(.97) rotate(-1deg);filter:brightness(1)}100%{opacity:1;transform:none;filter:none}}
+@keyframes skxHop{0%,100%{transform:none;filter:none}40%{transform:translateY(-22%) scale(1.08);filter:brightness(1.45)}70%{transform:translateY(4%) scale(.98)}}
+@keyframes skxL{0%{transform:rotate(0) scale(1,1);animation-timing-function:cubic-bezier(.3,0,.3,1)}8%{transform:rotate(-3deg) scale(1,.98);animation-timing-function:cubic-bezier(.2,.6,.3,1)}30%{transform:rotate(16deg) scale(.95,1.07);animation-timing-function:cubic-bezier(.6,0,.85,.4)}50%{transform:rotate(-13deg) scale(1.02,.8);animation-timing-function:cubic-bezier(.2,.7,.3,1)}72%{transform:rotate(5deg) scale(.99,1.03);animation-timing-function:ease-in-out}88%{transform:rotate(-1.5deg) scale(1,.99);animation-timing-function:ease-out}100%{transform:rotate(0) scale(1,1)}}
+@keyframes skxR{0%{transform:rotate(0) scale(1,1);animation-timing-function:cubic-bezier(.3,0,.3,1)}8%{transform:rotate(3deg) scale(1,.98);animation-timing-function:cubic-bezier(.2,.6,.3,1)}30%{transform:rotate(-16deg) scale(.95,1.07);animation-timing-function:cubic-bezier(.6,0,.85,.4)}50%{transform:rotate(13deg) scale(1.02,.8);animation-timing-function:cubic-bezier(.2,.7,.3,1)}72%{transform:rotate(-5deg) scale(.99,1.03);animation-timing-function:ease-in-out}88%{transform:rotate(1.5deg) scale(1,.99);animation-timing-function:ease-out}100%{transform:rotate(0) scale(1,1)}}
+@keyframes skxBob{0%{transform:translateY(0);animation-timing-function:ease-in-out}30%{transform:translateY(2.2%);animation-timing-function:cubic-bezier(.6,0,.85,.4)}52%{transform:translateY(-3.4%);animation-timing-function:cubic-bezier(.2,.7,.3,1)}78%{transform:translateY(.8%);animation-timing-function:ease-out}100%{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.skx *{animation:none!important}}
+.skl{display:flex;align-items:center}
+.skl .skx{width:100%;flex:none}
+</style>
+<a class="skb" target="_blank" rel="noopener" href="https://tinyurl.com/skyking-service">
+      <span class="skl"><span class="skx" role="img" aria-label="Sky King Travel &amp; Tourism"><span class="lgf"><img class="lgb" src="../img/ccfd13b652f12043.jpg" alt=""><img class="wl" src="../img/c3722dc499af7454.webp" alt=""><img class="wr" src="../img/f7283c6ac448d7b6.webp" alt=""><img class="lgt" src="../img/30b91ecd829bc768.webp" alt=""><img class="lt l0" src="../img/17b3012e5bc3ab56.webp" alt=""><img class="lt l1" src="../img/86e8d3230b78fd1a.webp" alt=""><img class="lt l2" src="../img/2dc2ad33da36f38a.webp" alt=""><img class="lt l3" src="../img/cbd22a544577dc5e.webp" alt=""><img class="lt l4" src="../img/63705f2a62a88214.webp" alt=""><img class="lt l5" src="../img/51bb1e13fe4cbdb0.webp" alt=""><img class="lt l6" src="../img/8a6164132707089d.webp" alt=""></span></span></span>
       <span class="skt"><b data-t="skn"></b><small data-t="sks"></small><em data-t="skgo"></em></span>
     </a>
   </header>
@@ -346,5 +371,6 @@ $("bCv").onclick=async ev=>{if(!dl)return;ev.preventDefault();
 
 let s="tr";try{s=localStorage.getItem("ka-lang")||"tr"}catch(e){}if(!T[s])s="tr";setLang(s);
 </script>
+<script>(()=>{const v=document.getElementById("avv");if(!v)return;v.muted=true;if(matchMedia("(prefers-reduced-motion:reduce)").matches){v.removeAttribute("autoplay");v.pause();return}const go=()=>{const q=v.play();q&&q.catch&&q.catch(()=>{})};go();document.addEventListener("visibilitychange",()=>{if(!document.hidden)go()})})();</script>
 
 </body></html>
