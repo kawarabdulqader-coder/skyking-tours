@@ -186,7 +186,7 @@ const CODES = ["1tokmjgncx5", "4bjb85gfxt", "1p7zpsotvfx"];
 function hsh(str){ let h1=0xdeadbeef^77, h2=0x41c6ce57^77; for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (4294967296*(2097151&h2)+(h1>>>0)).toString(36); }
 function digits(s){ return String(s||"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/\D/g,""); }
 /* changing anything needs the edit code; the other codes only open the page for reading */
-const EDIT_CODES = ["2d5mrfvb2ff"], isEdit = h => EDIT_CODES.indexOf(h) >= 0;
+const EDIT_CODES = ["20bdagr8iy8"], isEdit = h => EDIT_CODES.indexOf(h) >= 0;
 const EDIT_ACTS = {cell:1,rowadd:1,rowedit:1,adjadd:1,adjedit:1,fixed:1,wadd:1,wedit:1,memoadd:1,memoedit:1,addyear:1,restoreyes:1};
 function askEdit(then){
   openSheet({ title:"بو گوهۆڕینێ ژمارا نهێنی یا دەستکاریێ بنڤیسە", fields:[{id:"code",label:"ژمارا نهێنی",type:"pass",required:true}],
