@@ -127,7 +127,6 @@ header img{width:100vw!important;max-width:none!important;margin-inline:calc(50%
 .xb{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--tx);background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:13px 14px;font-weight:700;font-size:14.5px}
 .xb .xar{display:none}
 .xb{justify-content:center;text-align:center;padding:11px 8px!important;font-size:13.5px!important;gap:6px!important}
-.vdb{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--ink);border:0;border-radius:14px;padding:12px 10px;font-family:var(--f-disp);font-weight:800;font-size:15px}
 </style>
 
 <div class="wrap" dir="rtl">
@@ -190,7 +189,6 @@ header .skl{width:100vw;margin-inline:calc(50% - 50vw);-webkit-mask-image:linear
     <a class="xb" href="https://tinyurl.com/skyking-service" target="_blank" rel="noopener"><span>🌐</span><span>خزمەتگوزاریێن سکای کینگ</span><span class="xar">‹</span></a>
     <a class="xb" href="https://tinyurl.com/kawar-abdulqader" target="_blank" rel="noopener"><span>👤</span><span>ڕێڤەبەرێ سکای کینگ</span><span class="xar">‹</span></a>
 
-    <button class="vdb" id="vdb" type="button" data-src="media/visa-docs.jpg"><span>📋</span><span>من دڤێت تەقدیم بکەم، چ دگەل خۆ بینم؟</span></button>
   </div>
   <div class="lb" id="lb" hidden><button type="button" aria-label="داخستن">×</button><img alt=""></div>
 
@@ -225,7 +223,7 @@ PN.forEach(([b,p])=>document.getElementById(b).onclick=()=>{const el=document.ge
 
 document.querySelectorAll('#vidb,#phob,#faqb,#wab').forEach(b=>b.addEventListener('click',()=>document.querySelectorAll('#vidp video').forEach(v=>{if(document.getElementById('vidp').hidden)v.pause()})));
 document.querySelectorAll('#vidp video').forEach(v=>v.addEventListener('play',()=>document.querySelectorAll('#vidp video').forEach(o=>{if(o!==v)o.pause()})));
-(()=>{const lb=document.getElementById('lb'),im=lb.querySelector('img');document.querySelectorAll('#phop .pg button,#vdb').forEach(b=>b.onclick=()=>{im.src=b.dataset.src;lb.hidden=false});lb.onclick=e=>{if(e.target!==im)lb.hidden=true};document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.hidden=true})})();
+(()=>{const lb=document.getElementById('lb'),im=lb.querySelector('img');document.querySelectorAll('#phop .pg button').forEach(b=>b.onclick=()=>{im.src=b.dataset.src;lb.hidden=false});lb.onclick=e=>{if(e.target!==im)lb.hidden=true};document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.hidden=true})})();
 
 (()=>{const f=document.querySelector('footer');const fit=()=>{f.classList.remove('short','tiny');if(f.scrollWidth>f.clientWidth+1)f.classList.add('short');if(f.scrollWidth>f.clientWidth+1)f.classList.add('tiny')};fit();addEventListener('resize',fit);document.fonts&&document.fonts.ready.then(fit)})();
 </script>
