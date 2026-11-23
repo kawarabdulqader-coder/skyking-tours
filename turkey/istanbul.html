@@ -241,7 +241,7 @@ function panelHTML(){const p=S.p||{s:150,e:0,d:today()};const d=p.d;
  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="pmk">${T('make')}</button></div><div id="pout"></div></div>`}
 function bind(){
  document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{const v=b.dataset.v;if(v===S.view)return;if(v==='home'){goHome();return}try{history.pushState({v},'')}catch(e){}vStop();S.view=v;render();window.scrollTo(0,0)});
- const vb=document.getElementById('vbtn');if(vb){vb.onclick=()=>{const a=curAU(),k=vKeyNow();if(a&&!a.paused&&!a.ended){VSTOP[k]=1;vStop()}else{delete VSTOP[k];vPlay()}};vUI()}
+ const vb=document.getElementById('vbtn');if(vb){vb.onclick=()=>{const a=curAU(),k=vKeyNow();if(VPEND===k){VSTOP[k]=1;VPEND=null;vUI()}else if(a&&!a.paused&&!a.ended){VSTOP[k]=1;vStop()}else{delete VSTOP[k];vPlay()}};vUI()}
  document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{let st=null;try{st=history.state}catch(e){}vStop();if(st&&st.v){history.back()}else{S.view='home';render();window.scrollTo(0,0)}});
  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{S.g=b.dataset.g;render()});
  document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{S.filter=b.dataset.f;render()});
@@ -260,11 +260,11 @@ let AUS={},PLAYED={};const VK={hotels:'VOICE',program:'VOICE2'};
 function voiceSrc(k){const d=window[k];try{const i=d.indexOf(',');const bin=atob(d.slice(i+1));const u=new Uint8Array(bin.length);for(let n=0;n<bin.length;n++)u[n]=bin.charCodeAt(n);return URL.createObjectURL(new Blob([u],{type:'audio/mpeg'}))}catch(e){return d}}
 function au(){const k=(S.view==='home'?'VOICEH':VK[S.view]);if(!k)return null;if(!AUS[k]){const a=new Audio();a.src=voiceSrc(k);a.setAttribute('playsinline','');a.preload='auto';['play','pause','ended'].forEach(ev=>a.addEventListener(ev,vUI));AUS[k]=a}return AUS[k]}
 function curAU(){const k=(S.view==='home'?'VOICEH':VK[S.view]);return k?AUS[k]:null}
-function vUI(){const b=document.getElementById('vbtn');if(!b)return;const a=curAU();const on=a&&!a.paused&&!a.ended;b.classList.toggle('on',!!on);if(on)b.classList.remove('need');b.innerHTML=on?`⏹ ${T('vStop')}`:`🔊 ${S.view==='home'?(S.lang==='ar'?'استمع إلى شرح البرنامج':'گوهداریا ڕوونکرنا پروگرامی بکە'):T('vPlay')}`}
+function vUI(){const b=document.getElementById('vbtn');if(!b)return;const a=curAU();const on=a&&!a.paused&&!a.ended;const pend=!on&&!!VPEND&&VPEND===vKeyNow();b.classList.toggle('on',!!(on||pend));b.classList.remove('need');if(on)b.classList.remove('need');b.innerHTML=(on||pend)?`⏹ ${T('vStop')}`:`🔊 ${S.view==='home'?T('vPlay'):T('vPlay')}`}
 function vPlay(){const a=au();if(!a)return;try{a.currentTime=0}catch(e){}let p;try{p=a.play()}catch(e){}if(p&&p.catch)p.catch(()=>{const bt=document.getElementById('vbtn');if(bt)bt.classList.add('need');const once=()=>{document.removeEventListener('pointerdown',once,true);if(curAU()===a){const q=a.play();if(q&&q.catch)q.catch(()=>{})}};document.addEventListener('pointerdown',once,true)});vUI()}
 function vStop(){for(const k in AUS){const a=AUS[k];a.pause();try{a.currentTime=0}catch(e){}}vUI()}
-var VSTOP={},VLAST=null;function vKeyNow(){return typeof vkey==='function'?vkey():(S.view==='home'?'VOICEH':VK[S.view])}
-function vAuto(){const k=vKeyNow();if(k===VLAST)return;VLAST=k;if(!k||!window[k]||VSTOP[k])return;const a=au();if(!a||(!a.paused&&!a.ended))return;try{a.currentTime=0}catch(e){}let p;try{p=a.play()}catch(e){}if(p&&p.catch)p.catch(()=>{const bt=document.getElementById('vbtn');if(bt)bt.classList.add('need');const EV=['touchend','pointerup','click'],off=()=>EV.forEach(ev=>document.removeEventListener(ev,go,true)),go=e=>{const t=e.target;if(t&&t.closest&&t.closest('[data-v],[data-c],[data-back],#vbtn,a[href]')){off();return}if(vKeyNow()!==k||VSTOP[k]||curAU()!==a||!a.paused){off();return}let q;try{q=a.play()}catch(x){}if(q&&q.then)q.then(()=>{off();vUI()},()=>{});else off()};EV.forEach(ev=>document.addEventListener(ev,go,true))});vUI()}
+var VSTOP={},VLAST=null,VPEND=null;function vKeyNow(){return typeof vkey==='function'?vkey():(S.view==='home'?'VOICEH':VK[S.view])}
+function vAuto(){const k=vKeyNow();if(k===VLAST)return;VLAST=k;VPEND=null;if(!k||!window[k]||VSTOP[k])return;const a=au();if(!a||(!a.paused&&!a.ended))return;try{a.currentTime=0}catch(e){}let p;try{p=a.play()}catch(e){}if(p&&p.catch)p.catch(()=>{VPEND=k;vUI();const EV=['touchend','pointerup','click'],off=()=>{EV.forEach(ev=>document.removeEventListener(ev,go,true));if(VPEND===k){VPEND=null;vUI()}},go=e=>{const t=e.target;if(t&&t.closest&&t.closest('#vbtn')){EV.forEach(ev=>document.removeEventListener(ev,go,true));return}if(t&&t.closest&&t.closest('[data-v],[data-c],[data-back],a[href]')){off();return}if(vKeyNow()!==k||VSTOP[k]||curAU()!==a||!a.paused){off();return}let q;try{q=a.play()}catch(x){}if(q&&q.then)q.then(()=>{off();vUI()},()=>{if(VPEND===k)vUI()});else off()};EV.forEach(ev=>document.addEventListener(ev,go,true))});vUI()}
 function boot(){render()}
 window.addEventListener('hashchange',boot);boot();
 </script>
@@ -272,8 +272,8 @@ window.addEventListener('hashchange',boot);boot();
 </html>
 
 <style>
-.skrow{display:flex;gap:8px;align-items:stretch;margin-top:4px}
-.skrow .vbig{flex:1;min-width:0;width:auto!important;margin:0!important;font-size:14.5px!important;padding:12px 8px!important;white-space:nowrap}
+.skrow{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:4px}
+.skrow .vbig{flex:0 0 auto!important;min-width:0;width:auto!important;margin:0!important;font-size:13px!important;padding:7px 16px!important;white-space:nowrap;animation:none!important}
 #skHub{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;background:var(--bg2);border:1px solid var(--gold);color:var(--gold2);font-weight:700;font-size:12.5px;border-radius:14px;padding:6px 11px;text-decoration:none}
 .top #skHub{border-radius:999px;padding:6px 11px}
 </style>
