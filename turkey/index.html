@@ -227,4 +227,15 @@ document.querySelectorAll('#vidp video').forEach(v=>v.addEventListener('play',()
 (()=>{const f=document.querySelector('footer');const fit=()=>{f.classList.remove('short','tiny');if(f.scrollWidth>f.clientWidth+1)f.classList.add('short');if(f.scrollWidth>f.clientWidth+1)f.classList.add('tiny')};fit();addEventListener('resize',fit);document.fonts&&document.fonts.ready.then(fit)})();
 </script>
 
+<style>#skFrame{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:99999;background:#060a16}html.skf,html.skf body{overflow:hidden}</style>
+<script>(function(){var ov=null,A=null;window.SKA=null;
+function stop(){try{if(A){A.pause()}}catch(e){}A=null;window.SKA=null}
+window.skClose=function(inside){if(ov){ov.remove();ov=null}document.documentElement.classList.remove('skf');stop();if(inside&&location.hash){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}};
+function openG(f){var id=f.replace(/\.html.*$/,'');stop();A=new Audio('voice/'+id+'.mp3');A.setAttribute('playsinline','');A.preload='auto';var p;try{p=A.play()}catch(e){}if(p&&p.catch)p.catch(function(){});
+window.SKA={a:A,home:id.indexOf('-')>0?'VOICE0':'VOICEH'};
+ov=document.createElement('iframe');ov.id='skFrame';ov.setAttribute('allow','autoplay');ov.src=f;document.body.appendChild(ov);document.documentElement.classList.add('skf');
+try{history.pushState({skg:1},'','#'+id)}catch(e){}}
+addEventListener('popstate',function(){if(ov)skClose()});
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.dest');if(!a)return;if(e.ctrlKey||e.metaKey||e.shiftKey)return;e.preventDefault();openG(a.getAttribute('href'))},true);
+})();</script>
 </body></html>
