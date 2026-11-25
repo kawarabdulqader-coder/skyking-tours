@@ -6,6 +6,20 @@
 @keyframes mtp{0%{box-shadow:0 0 0 0 rgba(233,196,106,.65)}70%{box-shadow:0 0 0 10px rgba(233,196,106,0)}100%{box-shadow:0 0 0 0 rgba(233,196,106,0)}}
 @media (prefers-reduced-motion:reduce){.taph,.mediatop .mt{animation:none}}
 .vbwrap{margin-top:4px}
+
+header{padding:14px 0 10px}
+.lgw{max-width:220px;margin:0 auto;border-radius:16px}
+.name{font-size:14px;margin-top:10px}
+.vhint{text-align:center;font-weight:800;font-size:15.5px;color:#b8862b;margin:8px 0 0;line-height:1.6}
+.vhint small{display:block;font-size:12.5px;color:var(--muted);font-weight:700}
+.vbtn .vn{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:#111;color:#e9c46a;line-height:1}
+.vbtn.v2 .vn{background:#c79a3a;color:#111}
+.vbtn.on .vn{background:#fff;color:#c0392b}
+.vbtn .vk{flex:none;width:22px;height:22px;border-radius:50%;display:none;place-items:center;font-size:13px;font-weight:900;background:#2e9e57;color:#fff;line-height:1}
+.vbtn.done .vk{display:grid}
+.vbtn.nx{animation:mtp 1.6s infinite;border-color:#e9c46a}
+.mediatop{margin:22px 0 6px}
+@media (prefers-reduced-motion:reduce){.vbtn.nx{animation:none}}
 </style></head><body>
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
@@ -204,6 +218,20 @@
     <div class="lgw"><div class="logo lg3" role="img" aria-label="Sky King Travel &amp; Tourism logo"><div class="lgf"><img class="lgb" src="img/ccfd13b652f12043.jpg" alt=""><img class="wg wl" src="img/c3722dc499af7454.webp" alt=""><img class="wg wr" src="img/f7283c6ac448d7b6.webp" alt=""><img class="lgt" src="img/30b91ecd829bc768.webp" alt=""><img class="lt" style="left:18.625%;top:66.883%;width:8.750%;--i:0" src="img/17b3012e5bc3ab56.webp" alt=""><img class="lt" style="left:27.875%;top:67.100%;width:8.750%;--i:1" src="img/86e8d3230b78fd1a.webp" alt=""><img class="lt" style="left:36.250%;top:67.100%;width:9.375%;--i:2" src="img/2dc2ad33da36f38a.webp" alt=""><img class="lt" style="left:49.500%;top:67.100%;width:8.750%;--i:3" src="img/cbd22a544577dc5e.webp" alt=""><img class="lt" style="left:58.625%;top:67.100%;width:3.000%;--i:4" src="img/63705f2a62a88214.webp" alt=""><img class="lt" style="left:62.500%;top:67.100%;width:8.875%;--i:5" src="img/51bb1e13fe4cbdb0.webp" alt=""><img class="lt" style="left:71.875%;top:66.883%;width:10.000%;--i:6" src="img/8a6164132707089d.webp" alt=""></div></div></div>
     <p class="name" data-t="name"></p>
   </header>
+  
+  <div class="vbwrap">
+    <p class="vhint"><span data-t="vhint"></span><small data-t="vhint2"></small></p>
+    <button class="vbtn" data-v="0" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn v2" data-v="1" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn v2" data-v="2" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn v2" data-v="3" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn v2" data-v="4" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn v2" data-v="5" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn v2" data-v="6" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
+    <button class="vbtn vdoc" id="vdoc" type="button"><span class="vi">📋</span><span data-t="vdoc"></span></button>
+    <div class="lbx" id="lbd" hidden><img src="media/visa-docs.jpg" alt=""></div>
+  </div>
+
   <section class="mediatop">
   <p class="taph" data-t="taph"></p>
   <div class="mtabs"><button type="button" class="mt" id="mtp" aria-expanded="false"><span>📷</span> <span data-t="vph"></span></button><button type="button" class="mt" id="mtv" aria-expanded="false"><span>🎥</span> <span data-t="vvd"></span></button></div>
@@ -216,17 +244,6 @@
   <p class="note" data-t="soon"></p>
   </div>
   </section>
-  <div class="vbwrap">
-    <button class="vbtn" data-v="0" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn v2" data-v="1" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn v2" data-v="2" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn v2" data-v="3" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn v2" data-v="4" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn v2" data-v="5" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn v2" data-v="6" type="button" aria-pressed="false"><span class="vi">🔊</span><span class="vl"></span></button>
-    <button class="vbtn vdoc" id="vdoc" type="button"><span class="vi">📋</span><span data-t="vdoc"></span></button>
-    <div class="lbx" id="lbd" hidden><img src="media/visa-docs.jpg" alt=""></div>
-  </div>
 
   <main>
 
@@ -270,17 +287,17 @@
 <script>
 const WA="9647507396237";
 const T={
- ku:{vdoc:"من دڤێت تەقدیم بکەم، چ دگەل خۆ بینم؟",taph:"👇 کلیک بکە و بەرێ خۆ بدە وێنە و ڤیدیۆیێن ڤیزێن مە 👇",vph:"وێنەیێن ڤیزا",vvd:"ڤیدیۆیێن ڤیزا",dir:"rtl",name:"سکای کینگ ژبو خزمەتێن کونسولگەری و گەشتیاری",tag:"",chips:["ڤیزا","بلیتێن فرۆکێ","گەشت","پوستێ ب لەز","گروپێن گەشتیاری","هوتێل","بیمەیا تەندروستیێ","هژمارا بانکێ","ژڤانێن قونسلخانێ"],wa1:"واتسئاپ ١",wa2:"واتسئاپ ٢",call:"تەلەفۆن بکە",rh:"بۆ هەر گازندەکێ، هیڤییە نامەیەکێ بۆ مە بهنێرە",rp:"ب چەند چرکەیان ل سەر گوگلی ستێران بدە مە و ڕایا خۆ بنڤێسە. ڕایا تە هاریکاریا خەلکێ دیتر دکەت.",rb:"ل سەر گوگلی ستێران بدە مە",st1:"ڤیزە هاتینە وەرگرتن",st2:"وەلات",st3:"پوست بۆ هەمی جیهانێ",iah:"پێدڤیاتیێن هەر وەلاتەکی بپشکنە",iap:"IATA Travel Centre: پاسپۆرت، ڤیزا و مەرجێن ساخلەمیێ بۆ هەمی وەلاتێن جیهانێ (ژێدەرێ فەرمی یێ هێلێن ئاسمانی)",grp:"گروپێن گەشتیاری (کەنگی گروپا داهاتی یە و بها چەندە؟)",fol:"+ فۆلۆ بکە",folh:"مە فۆلۆ بکە دا ئۆفەر و تورێن نوی ژ دەست تە نەچن",
+ ku:{vhint:"👇 هەر ٧ دوگمان ئێک ب ئێک گوهداری بکە 👇",vhint2:"بەرسڤا هەمی پسیارێن تە د ڤان دەنگاندا هەیە",vdoc:"من دڤێت تەقدیم بکەم، چ دگەل خۆ بینم؟",taph:"👇 کلیک بکە و بەرێ خۆ بدە وێنە و ڤیدیۆیێن ڤیزێن مە 👇",vph:"وێنەیێن ڤیزا",vvd:"ڤیدیۆیێن ڤیزا",dir:"rtl",name:"سکای کینگ ژبو خزمەتێن کونسولگەری و گەشتیاری",tag:"",chips:["ڤیزا","بلیتێن فرۆکێ","گەشت","پوستێ ب لەز","گروپێن گەشتیاری","هوتێل","بیمەیا تەندروستیێ","هژمارا بانکێ","ژڤانێن قونسلخانێ"],wa1:"واتسئاپ ١",wa2:"واتسئاپ ٢",call:"تەلەفۆن بکە",rh:"بۆ هەر گازندەکێ، هیڤییە نامەیەکێ بۆ مە بهنێرە",rp:"ب چەند چرکەیان ل سەر گوگلی ستێران بدە مە و ڕایا خۆ بنڤێسە. ڕایا تە هاریکاریا خەلکێ دیتر دکەت.",rb:"ل سەر گوگلی ستێران بدە مە",st1:"ڤیزە هاتینە وەرگرتن",st2:"وەلات",st3:"پوست بۆ هەمی جیهانێ",iah:"پێدڤیاتیێن هەر وەلاتەکی بپشکنە",iap:"IATA Travel Centre: پاسپۆرت، ڤیزا و مەرجێن ساخلەمیێ بۆ هەمی وەلاتێن جیهانێ (ژێدەرێ فەرمی یێ هێلێن ئاسمانی)",grp:"گروپێن گەشتیاری (کەنگی گروپا داهاتی یە و بها چەندە؟)",fol:"+ فۆلۆ بکە",folh:"مە فۆلۆ بکە دا ئۆفەر و تورێن نوی ژ دەست تە نەچن",
   loc:"کلیک بکە دا جهێ مە ل سەر نەخشەی ببینی",locsub:"",eml:"ئیمەیل",oth:"بۆ خزمەتگوزاریێن دی کلیک بکە",mgr:"ڕێڤەبەرێ سکای کینگ",visas:"هندەک ژ وان ڤیزێن هاتینە وەرگرتن",soon:"هەمی ڤیزە ب ڕەزامەندیا خودانێن وان هاتینە بەلاڤکرن. بۆ پاراستنا وان، ژمارا پاسپۆرتێ و کۆدێن ئەلەکترۆنی هاتینە ڤەشارتن.",de:"ئەلمانیا",fr:"فەرەنسا",it:"ئیتالیا",gr:"یۆنان",uk:"بەریتانیا",us:"ئەمریکا",usv:"ڤیزا ئەمریکا (B1/B2)",sch:"ڤیزا شەنگن",ukv:"ڤیزا بەریتانیا",nat:"ڤیزا نیشتمانی (D)",ok:"✓ هاتە وەرگرتن",city:"دهۆک",
   svch:"خزمەتێن ڤیزێ",ask:"پسیار بکە ›",msg:"سلاڤ، دڤێم زانیاریان وەربگرم دەربارەی: ",
   docsh:"بەلگەنامێن پێدڤی",docsnote:"لیستا دووماهیێ ل نڤیسینگەها مە بۆ تە دێ هێتە پشتراستکرن.",
   svd:["ئەلمانیا، فەرەنسا، ئیتالیا، یۆنان و هەمی وەلاتێن شەنگن","ڤیزا گەشت و بازرگانیێ (B1/B2)","ڤیزا سەرەدانێ (Standard Visitor)","ڤیزا گەشت و سەرەدانێ (Visitor Visa)","ئی-ڤیزا و ڤیزا قونسلخانێ","ژڤانێن بالیۆزخانە و قونسلخانان","بیمەیا گەشتێ و ساخلەمیێ یا پەسەندکری بۆ دۆسیا ڤیزێ"],svc:["ڤیزا شەنگن","ڤیزا ئەمریکا","ڤیزا بەریتانیا","ڤیزا کەنەدا","ڤیزا تورکیا","گرتنا ژڤانێن قونسلخانێ","بیمە (ئینشورەنس)"],ct:"پەیوەندیێ ب مە بکە"},
- ar:{vdoc:"أريد التقديم، ماذا أحضر معي؟",taph:"👇 اضغط لمشاهدة صور وفيديوهات تأشيراتنا 👇",vph:"شاهد صور التأشيرات",vvd:"شاهد فيديوهات التأشيرات",dir:"rtl",name:"سكاي كينغ للخدمات القنصلية والسياحة",tag:"",chips:["تأشيرات","تذاكر طيران","رحلات","بريد سريع","مجموعات سياحية","فنادق","تأمين صحي","حساب بنكي","مواعيد القنصليات"],wa1:"واتساب ١",wa2:"واتساب ٢",call:"اتصل بنا",rh:"لأي شكوى، يرجى مراسلتنا عبر البريد الإلكتروني",rp:"قيّمنا على جوجل وشاركنا رأيك في ثوانٍ. رأيك يساعد الآخرين.",rb:"قيّمنا على جوجل",st1:"تأشيرة تمت الموافقة عليها",st2:"دول",st3:"بريد لكل العالم",iah:"تحقق من شروط دخول أي دولة",iap:"IATA Travel Centre: الجواز والتأشيرة والشروط الصحية لجميع دول العالم (المرجع الرسمي لشركات الطيران)",grp:"المجموعات السياحية (متى المجموعة القادمة وكم السعر؟)",fol:"+ تابعنا",folh:"تابعنا لتصلك العروض والرحلات الجديدة أولاً بأول",
+ ar:{vhint:"👇 استمع إلى الأزرار السبعة واحداً تلو الآخر 👇",vhint2:"فيها أجوبة كل أسئلتك",vdoc:"أريد التقديم، ماذا أحضر معي؟",taph:"👇 اضغط لمشاهدة صور وفيديوهات تأشيراتنا 👇",vph:"شاهد صور التأشيرات",vvd:"شاهد فيديوهات التأشيرات",dir:"rtl",name:"سكاي كينغ للخدمات القنصلية والسياحة",tag:"",chips:["تأشيرات","تذاكر طيران","رحلات","بريد سريع","مجموعات سياحية","فنادق","تأمين صحي","حساب بنكي","مواعيد القنصليات"],wa1:"واتساب ١",wa2:"واتساب ٢",call:"اتصل بنا",rh:"لأي شكوى، يرجى مراسلتنا عبر البريد الإلكتروني",rp:"قيّمنا على جوجل وشاركنا رأيك في ثوانٍ. رأيك يساعد الآخرين.",rb:"قيّمنا على جوجل",st1:"تأشيرة تمت الموافقة عليها",st2:"دول",st3:"بريد لكل العالم",iah:"تحقق من شروط دخول أي دولة",iap:"IATA Travel Centre: الجواز والتأشيرة والشروط الصحية لجميع دول العالم (المرجع الرسمي لشركات الطيران)",grp:"المجموعات السياحية (متى المجموعة القادمة وكم السعر؟)",fol:"+ تابعنا",folh:"تابعنا لتصلك العروض والرحلات الجديدة أولاً بأول",
   loc:"اضغط لترى موقعنا على الخريطة",locsub:"",eml:"البريد",oth:"اضغط للخدمات الأخرى",mgr:"مدير سكاي كينغ",visas:"بعض التأشيرات التي حصلنا عليها",soon:"نُشرت جميع التأشيرات بموافقة أصحابها. وحمايةً لهم، تم إخفاء رقم الجواز والرموز الإلكترونية.",de:"ألمانيا",fr:"فرنسا",it:"إيطاليا",gr:"اليونان",uk:"بريطانيا",us:"أمريكا",usv:"تأشيرة أمريكا (B1/B2)",sch:"تأشيرة شنغن",ukv:"تأشيرة بريطانيا",nat:"تأشيرة وطنية (D)",ok:"✓ تمت الموافقة",city:"دهوك",
   svch:"خدمات التأشيرات",ask:"استفسر ›",msg:"مرحباً، أريد معلومات عن: ",
   docsh:"المستندات المطلوبة",docsnote:"يتم تأكيد القائمة النهائية في مكتبنا.",
   svd:["ألمانيا، فرنسا، إيطاليا، اليونان وجميع دول شنغن","تأشيرة سياحة وأعمال (B1/B2)","تأشيرة زيارة (Standard Visitor)","تأشيرة سياحة وزيارة (Visitor Visa)","تأشيرة إلكترونية وتأشيرة قنصلية","مواعيد السفارات والقنصليات","تأمين سفر وصحي معتمد لملف التأشيرة"],svc:["تأشيرة شنغن","تأشيرة أمريكا","تأشيرة بريطانيا","تأشيرة كندا","تأشيرة تركيا","حجز مواعيد القنصليات","تأمين (إنشورنس)"],ct:"تواصل معنا"},
- en:{vdoc:"I want to apply — what should I bring?",taph:"👇 Tap to see our visa photos & videos 👇",vph:"View visa photos",vvd:"View visa videos",dir:"ltr",name:"Skyking for Consulate Services & Tourism",tag:"",chips:["Visas","Flights","Tours","Express Mail","Tour Groups","Hotels","Health Insurance","Bank Account","Consulate Appointments"],wa1:"WhatsApp 1",wa2:"WhatsApp 2",call:"Call us",rh:"For any complaint, please email us",rp:"Rate us on Google and share your experience. It only takes a few seconds and helps others.",rb:"Rate us on Google",st1:"approved visas",st2:"countries",st3:"worldwide mail",iah:"Check entry rules for any country",iap:"IATA Travel Centre: passport, visa and health requirements for every country (the official airline reference)",grp:"tour groups (when is the next group and what is the price?)",fol:"+ Follow",folh:"Follow us so you never miss new offers and tours",
+ en:{vhint:"👇 Listen to all 7 buttons, one by one 👇",vhint2:"They answer all your questions",vdoc:"I want to apply — what should I bring?",taph:"👇 Tap to see our visa photos & videos 👇",vph:"View visa photos",vvd:"View visa videos",dir:"ltr",name:"Skyking for Consulate Services & Tourism",tag:"",chips:["Visas","Flights","Tours","Express Mail","Tour Groups","Hotels","Health Insurance","Bank Account","Consulate Appointments"],wa1:"WhatsApp 1",wa2:"WhatsApp 2",call:"Call us",rh:"For any complaint, please email us",rp:"Rate us on Google and share your experience. It only takes a few seconds and helps others.",rb:"Rate us on Google",st1:"approved visas",st2:"countries",st3:"worldwide mail",iah:"Check entry rules for any country",iap:"IATA Travel Centre: passport, visa and health requirements for every country (the official airline reference)",grp:"tour groups (when is the next group and what is the price?)",fol:"+ Follow",folh:"Follow us so you never miss new offers and tours",
   loc:"Tap to see our location on the map",locsub:"",eml:"Email",oth:"Tap for our other services",mgr:"Sky King's manager",visas:"Some of the Visas We Obtained",soon:"All visas are shared with their holders' consent. Passport numbers and machine-readable codes are hidden for their protection.",de:"Germany",fr:"France",it:"Italy",gr:"Greece",uk:"United Kingdom",us:"USA",usv:"USA Visa (B1/B2)",sch:"Schengen Visa",ukv:"UK Visa",nat:"National Visa (D)",ok:"✓ Approved",city:"Duhok",
   svch:"Visa Services",ask:"Ask ›",msg:"Hello, I'd like information about: ",
   docsh:"Required Documents",docsnote:"Our office confirms the final list for your case.",
@@ -467,4 +484,12 @@ document.querySelectorAll("#vvp video").forEach(v=>v.addEventListener("play",()=
 L.addEventListener("animationend",e=>{if(e.animationName==="wgL")L.classList.remove("fly")});
 setTimeout(()=>L.classList.add("fly"),1900)})();</script>
 <script>(()=>{const b=document.getElementById("vdoc"),d=document.getElementById("lbd");b.onclick=()=>d.hidden=false;d.onclick=()=>d.hidden=true;document.addEventListener("keydown",e=>{if(e.key==="Escape")d.hidden=true})})();</script>
+<script>(function(){var bs=[].slice.call(document.querySelectorAll('.vbtn[data-v]'));if(!bs.length)return;
+var D={ku:'١٢٣٤٥٦٧٨٩',ar:'١٢٣٤٥٦٧٨٩',en:'123456789'};
+function lg(){var x=document.querySelector('.langs button[aria-pressed="true"]');return (x&&x.dataset.l)||'ku'}
+bs.forEach(function(b,i){var n=document.createElement('span');n.className='vn';b.insertBefore(n,b.firstChild);var k=document.createElement('span');k.className='vk';k.textContent='✓';b.appendChild(k);b.addEventListener('click',function(){b.classList.add('done');setTimeout(nx,30)})});
+function nx(){var d=D[lg()]||D.ku;bs.forEach(function(b,i){var n=b.querySelector('.vn');if(n.textContent!==d[i])n.textContent=d[i]});
+var playing=bs.some(function(b){return b.classList.contains('on')});var t=null;if(!playing){for(var i=0;i<bs.length;i++){if(!bs[i].classList.contains('done')){t=bs[i];break}}}
+bs.forEach(function(b){var w=(b===t);if(b.classList.contains('nx')!==w)b.classList.toggle('nx',w)})}
+setInterval(nx,600);nx();})();</script>
 </body></html>
